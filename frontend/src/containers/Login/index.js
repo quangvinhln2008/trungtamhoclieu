@@ -27,7 +27,7 @@ const Login = () =>{
               <FormItem
                 label="Mật khẩu:"
                 >
-                <Input
+                <Input.Password
                     
                     type="password"
                     placeholder="Mật khẩu"
