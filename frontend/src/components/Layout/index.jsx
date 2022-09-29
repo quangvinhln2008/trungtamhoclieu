@@ -1,10 +1,6 @@
 import React, {Component, useEffect, useState} from 'react'
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Prompt
+  matchRoutes
 } from "react-router-dom";
 
 import { Button, Result, Spin   } from 'antd';
@@ -12,12 +8,14 @@ import HeaderApp from '../Header'
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 
+import Dashboard from '../../containers/Dashboard';
+import NhomDoiTuong from '../../containers/List/NhomDoiTuong';
+
 import { Layout } from 'antd';
 
 const { Header, Content } = Layout;
 
 const LayoutApp = (props) => {
-  const {children} = props
   const [collapsed, setCollapsed] = useState(false);
   const [isLogin, setIsLogin] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -39,7 +37,6 @@ const LayoutApp = (props) => {
   }
   // if(isLogin){
   return ( 
-    <Router>
       <Layout style={{height: "100%"}} >
       <Navbar collapsed ={collapsed} />
       <Layout className="site-layout" style={{width: "auto", minHeight:"667px"}} >
@@ -53,13 +50,11 @@ const LayoutApp = (props) => {
               background:'#fff'
             }}
           >
-            {/* <Component /> */}
+            {props.component}
           </Content>
-          
         <Footer />
       </Layout>
     </Layout> 
-  </Router>
   //  )}
   //  return(
   //   <>

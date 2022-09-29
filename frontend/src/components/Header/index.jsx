@@ -1,8 +1,6 @@
 import React,  { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
   Link
 } from "react-router-dom";
 
@@ -20,6 +18,8 @@ const { Header } = Layout;
 const HeaderApp = (props) => {
   const {collapsed, onClickHandle} = props
   const [userName, setUserName] = useState('')
+  const pathname = window.location.pathname;
+
   useEffect(()=>{
     setUserName(window.localStorage.getItem('fullNameTracuu'))
   }, [])
@@ -74,13 +74,13 @@ const HeaderApp = (props) => {
                 cursor: 'pointer'} ,
               onClick: ()=> onClickHandle(),
             })}
-            {/* {
+            {
             <Breadcrumb className = {styles.headerBreadcrumbItem}>
               <Breadcrumb.Item fontSize="18px">
                 <Link  href={'/'}>Home</Link>
               </Breadcrumb.Item>
-              {pathname==='/thunhapthang' && <Breadcrumb.Item fontSize="18px">
-                Thu nhập tháng
+              {pathname==='/nhomdoituong' && <Breadcrumb.Item fontSize="18px">
+                Nhóm đối tượng
                   </Breadcrumb.Item>
               }
               {pathname==='/thuetncn' && <Breadcrumb.Item fontSize="18px">
@@ -117,7 +117,7 @@ const HeaderApp = (props) => {
                 User
                 </Breadcrumb.Item>
               }
-            </Breadcrumb>} */}
+            </Breadcrumb>}
           </div>
           <div>
           <Menu

@@ -2,23 +2,14 @@ import React, {useState, useEffect} from "react";
 import {Text} from '@chakra-ui/react'
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
   Link
 } from "react-router-dom";
 import {
-  UserOutlined,
-  UnorderedListOutlined,
   ContainerOutlined,
   PicRightOutlined,
-  VideoCameraOutlined,
   AppstoreOutlined,
   SettingOutlined,
-  LogoutOutlined,
-  AccountBookOutlined,
   HomeOutlined,
-  QuestionCircleOutlined,
-  TeamOutlined,
   BarChartOutlined,
   PieChartOutlined
 } from '@ant-design/icons';
@@ -58,63 +49,65 @@ const Navbar = (props) =>{
     };
   }
   const items = [
-    // getItem(<Link href={'/'}><a onClick={() => router.push('/') }>Home</Link>, '1', <HomeOutlined />),
+    getItem(<Link to={'/'}>Dashboard</Link>, 'dashboard', <AppstoreOutlined />),
+    getItem(<Link to ={'/tondauky'}>Tồn kho sách đầu kỳ</Link>, 'tondauky', <HomeOutlined />),
     getItem('Danh mục', 'danhmuc', <PicRightOutlined />, [
-      getItem(<Link href={'/nhomDoiTuong'}>Nhóm đối tượng</Link>, 'nhomdoituong'),
-      getItem(<Link href={'/doituong'}>Đối tượng</Link>, 'doituong'), 
-      getItem(<Link href={'/khoa'}>Khoa/ Phòng ban</Link>, 'khoa'), 
-      getItem(<Link href={'/loaisach'}>Loại hình sách</Link>, 'loaisach'), 
-      getItem(<Link href={'/sach'}>Sách</Link>, 'sach'), 
-      getItem(<Link href={'/nhanvien'}>Nhân viên</Link>, 'nhanvien'), 
-      getItem(<Link href={'/coso'}>Cơ sở</Link>, 'coso'), 
+      getItem(<Link to={'/hocky'}>Học kỳ</Link>, 'hocky'),
+      getItem(<Link to={'/nhomdoituong'}>Nhóm đối tượng</Link>, 'nhomdoituong'),
+      getItem(<Link to={'/doituong'}>Đối tượng</Link>, 'doituong'), 
+      getItem(<Link to={'/khoa'}>Khoa/ Phòng ban</Link>, 'khoa'), 
+      getItem(<Link to={'/loaisach'}>Loại hình sách</Link>, 'loaisach'), 
+      getItem(<Link to={'/sach'}>Sách</Link>, 'sach'), 
+      getItem(<Link to={'/nhanvien'}>Nhân viên</Link>, 'nhanvien'), 
+      getItem(<Link to={'/coso'}>Cơ sở</Link>, 'coso'), 
     ]),
     getItem('Quản lý nhập', 'quanlynhap', <ContainerOutlined />, [
-      getItem(<Link href={'/phieunhapmua'}>Nhập mua</Link>, 'phieunhapmua'),
-      getItem(<Link href={'/phieunhapin'}>Nhập In-Photo</Link>, 'phieunhapin'),
-      getItem(<Link href={'/phieunhapcoso'}>Nhập cơ sở thư viện</Link>, 'phieunhapcoso'),
-      getItem(<Link href={'/phieunhapphongban'}>Nhập từ phòng ban</Link>, 'phieunhapphongban'),
+      getItem(<Link to={'/phieunhapmua'}>Nhập mua</Link>, 'phieunhapmua'),
+      getItem(<Link to={'/phieunhapin'}>Nhập In-Photo</Link>, 'phieunhapin'),
+      getItem(<Link to={'/phieunhapcoso'}>Nhập cơ sở thư viện</Link>, 'phieunhapcoso'),
+      getItem(<Link to={'/phieunhapphongban'}>Nhập từ phòng ban</Link>, 'phieunhapphongban'),
     ]),
     getItem('Quản lý xuất', 'quanlyxuat', <ContainerOutlined />, [
-      getItem(<Link href={'/xuatcoso'}>Xuất cơ sở thư viện</Link>, 'xuatcoso'),
-      getItem(<Link href={'/xuatphathanh'}>Xuất phát hành</Link>, 'xuatphathanh'),
-      getItem(<Link href={'/xuatkygui'}>Xuất ký gửi</Link>, 'xuatkygui'),
-      getItem(<Link href={'/xuattang'}>Xuất tặng</Link>, 'xuattang'),
-      getItem(<Link href={'/xuatthanhly'}>Xuất thanh lý</Link>, 'xuatthanhly'),
-      getItem(<Link href={'/xuattra'}>Xuất trả nhà In-Photo</Link>, 'xuattra'),
-      getItem(<Link href={'/xuatphongban'}>Xuất phòng ban</Link>, 'xuatphongban'),
-      getItem(<Link href={'/xuatmat'}>Xuất mất</Link>, 'xuatmat'),
-      getItem(<Link href={'/xuatkhac'}>Xuất khác</Link>, 'xuatkhac'),
+      getItem(<Link to={'/xuatcoso'}>Xuất cơ sở thư viện</Link>, 'xuatcoso'),
+      getItem(<Link to={'/xuatphathanh'}>Xuất phát hành</Link>, 'xuatphathanh'),
+      getItem(<Link to={'/xuatkygui'}>Xuất ký gửi</Link>, 'xuatkygui'),
+      getItem(<Link to={'/xuattang'}>Xuất tặng</Link>, 'xuattang'),
+      getItem(<Link to={'/xuatthanhly'}>Xuất thanh lý</Link>, 'xuatthanhly'),
+      getItem(<Link to={'/xuattra'}>Xuất trả nhà In-Photo</Link>, 'xuattra'),
+      getItem(<Link to={'/xuatphongban'}>Xuất phòng ban</Link>, 'xuatphongban'),
+      getItem(<Link to={'/xuatmat'}>Xuất mất</Link>, 'xuatmat'),
+      getItem(<Link to={'/xuatkhac'}>Xuất khác</Link>, 'xuatkhac'),
     ]),
     getItem('Báo cáo-Thống kê', 'baocao', <PieChartOutlined />, [
-      getItem(<Link href={'/bangkenhap'}>Bảng kê nhập</Link>, 'bangkenhap'),
-      getItem(<Link href={'/bangkexuat'}>Bảng kê xuất</Link>, 'bangkexuat'),
-      getItem(<Link href={'/baocao-nhapxuatton'}>Báo cáo Nhập-Xuất-Tồn</Link>, 'baocao-nhapxuatton'),
-      getItem(<Link href={'/baocao-phanphoichenhlech'}>Bảng phân phối chênh lệch</Link>, 'baocao-phanphoichenhlech'),
+      getItem(<Link to={'/bangkenhap'}>Bảng kê nhập</Link>, 'bangkenhap'),
+      getItem(<Link to={'/bangkexuat'}>Bảng kê xuất</Link>, 'bangkexuat'),
+      getItem(<Link to={'/baocao-nhapxuatton'}>Báo cáo Nhập-Xuất-Tồn</Link>, 'baocao-nhapxuatton'),
+      getItem(<Link to={'/baocao-phanphoichenhlech'}>Bảng phân phối chênh lệch</Link>, 'baocao-phanphoichenhlech'),
     ]),
     getItem('Quản trị', 'quantri', <BarChartOutlined />, [
-      getItem(<Link href={'/member'}>Người dùng</Link>, 'member'),
-      getItem(<Link href={'/permission'}>Phân quyền</Link>, 'permission'),
+      getItem(<Link to={'/member'}>Người dùng</Link>, 'member'),
+      getItem(<Link to={'/permission'}>Phân quyền</Link>, 'permission'),
     ]), 
     getItem('Cài đặt', 'caidat', <SettingOutlined />, [
-      getItem(<Link href={'/profile'}>Tài khoản</Link>, 'profile'),
-      getItem(<Link href={'/profile'}>Đăng xuất</Link>, '6'), 
+      getItem(<Link to={'/profile'}>Tài khoản</Link>, 'profile'),
+      getItem(<Link to={'/logout'}>Đăng xuất</Link>, '6'), 
     ]), 
   ];
 
   return(
-    <Sider width='40vh' trigger={null} collapsible collapsed={collapsed}>
+    <Sider width={'30vh'} trigger={null} collapsible collapsed={collapsed}>
       {/* <div className={styles.logo}>
         Trung tâm học liệu
       </div> */}
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys = {['quanlynhap']}
-        defaultOpenKeys={['danhmuc', 'quanlynhap', 'quanlyxuat', 'baocao', 'quantri', 'caidat']}
+        defaultSelectedKeys = {['dashboard']}
+        // defaultOpenKeys={['danhmuc', 'quanlynhap', 'quanlyxuat', 'baocao', 'quantri', 'caidat']}
         items={items}
       />
       <div className={styles.version}>
-        <Text>Version: 1.0.0</Text>
+        {/* <Text>Version: 1.0.0</Text> */}
         <Divider/>
         {/* <Link href={'/help'}><a onClick={() => router.push('/help') }>Hướng dẫn sử dụng</a></Link> */}
       </div>
