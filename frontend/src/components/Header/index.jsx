@@ -77,18 +77,18 @@ const HeaderApp = (props) => {
             {
             <Breadcrumb className = {styles.headerBreadcrumbItem}>
               <Breadcrumb.Item fontSize="18px">
-                <Link  href={'/'}>Home</Link>
+                <Link  to={'/'}>Home</Link>
               </Breadcrumb.Item>
               {pathname==='/nhomdoituong' && <Breadcrumb.Item fontSize="18px">
                 Nhóm đối tượng
                   </Breadcrumb.Item>
               }
-              {pathname==='/thuetncn' && <Breadcrumb.Item fontSize="18px">
-                Thuế TNCN
+              {pathname==='/coso' && <Breadcrumb.Item fontSize="18px">
+                Cơ sở
                   </Breadcrumb.Item>
                 }
-              {pathname==='/changepassword' && <Breadcrumb.Item fontSize="18px">
-                Đổi mật khẩu
+              {pathname==='/loaisach' && <Breadcrumb.Item fontSize="18px">
+                Loại hình sách
                 </Breadcrumb.Item>
               }
               {pathname==='/profile' && <Breadcrumb.Item fontSize="18px">

@@ -4,7 +4,7 @@ import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
-const NhomDoiTuong = () =>{
+const CoSo = () =>{
   
   const [openModalContact, setOpenModalContact] = useState(false)
 
@@ -12,20 +12,29 @@ const NhomDoiTuong = () =>{
     setOpenModalContact(!openModalContact)
   }
 
-  const data = [{
-    TENNHOMDOITUONG: "NHA XUAT BAN",
+  const data = [
+    {
+      TENCOSO: "Cơ sở 778 Nguyễn Kiệm",
+     STATUS: "active"
+    },
+    {
+    TENCOSO: "Cơ sở Quận 7",
     STATUS: "active"
   },
   {
-   TENNHOMDOITUONG: "NHA IN",
-   STATUS: "delete"
+    TENCOSO: "Cơ sở Quận 9",
+   STATUS: "active"
+  },
+  {
+    TENCOSO: "Cơ sở Võ Văn Hát",
+   STATUS: "active"
   }]
 
   const columns = [
     {
-      title: 'Tên nhóm đối tượng',
-      dataIndex: 'TENNHOMDOITUONG',
-      key: 'TENNHOMDOITUONG',
+      title: 'Tên cơ sở thư viện',
+      dataIndex: 'TENCOSO',
+      key: 'TENCOSO',
     },
     {
       title: 'Tình trạng',
@@ -42,8 +51,8 @@ const NhomDoiTuong = () =>{
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button key={record.TENNHOMDOITUONG} type="link" onClick= {() => console.log(record.TENNHOMDOITUONG)}>Cập nhật</Button>
-          <Button key={record.TENNHOMDOITUONG} type="link" danger  onClick= {() => console.log(record.TENNHOMDOITUONG)}>Xóa</Button>
+          <Button key={record.TENCOSO} type="link" onClick= {() => console.log(record.TENCOSO)}>Cập nhật</Button>
+          <Button key={record.TENCOSO} type="link" danger  onClick= {() => console.log(record.TENCOSO)}>Xóa</Button>
         </Space>
       ),
     },
@@ -51,7 +60,7 @@ const NhomDoiTuong = () =>{
 
   return(
     <>
-      <Title level={3}>Nhóm đối tượng</Title>
+      <Title level={3}>Cơ sở thư viện</Title>
       <Divider />
       <VStack justifyContent={"start"} alignItems="start">
       <Space align="left" style={{ marginBottom: 16 }}>
@@ -66,7 +75,7 @@ const NhomDoiTuong = () =>{
       {/* Modal thêm mới */}
       <Modal
         open={openModalContact}
-        title="Thêm mới nhóm đối tượng"
+        title="Thêm mới cơ sở thư viện"
         // onOk={submitChangeEmail}
         onCancel={toogleModalFormContact}
         footer={null}
@@ -74,7 +83,7 @@ const NhomDoiTuong = () =>{
       <Form
           name="basic"
           labelCol={{
-            span: 8,
+            span: 6,
           }}
           wrapperCol={{
             span: 20,
@@ -86,12 +95,12 @@ const NhomDoiTuong = () =>{
           // onFinish={submitContact}
         >
           <Form.Item
-            label="Tên nhóm đối tượng: "
-            name="TENNHOMDOITUONG"
+            label="Tên cơ sở: "
+            name="TENCOSO"
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập tên nhóm đối tượng!'
+                message: 'Vui lòng nhập tên cơ sở!'
               },
             ]}
           >
@@ -108,4 +117,4 @@ const NhomDoiTuong = () =>{
   )
 }
 
-export default NhomDoiTuong;
+export default CoSo;

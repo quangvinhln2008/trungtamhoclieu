@@ -17,11 +17,13 @@ import { Divider, Layout, Menu } from 'antd';
 import styles from './index.module.css'
 
 const {Sider } = Layout;
+const rootSubmenuKeys = ['dashboard', 'danhmuc', 'quanlynhap','quanlyxuat', 'baocao', 'quantri', 'caidat'];
 
 const Navbar = (props) =>{
   const {collapsed} = props
   const [role, setRole] = useState('user')
-  
+  const [openKeys, setOpenKeys] = useState(['dashboard']);
+
   useEffect(()=>{
     setRole(window.localStorage.getItem('rolesTracuu'))
     }, []);
@@ -48,6 +50,17 @@ const Navbar = (props) =>{
       label,
     };
   }
+
+  function onOpenChange(keys){
+    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+
+    if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+      setOpenKeys(keys);
+    } else {
+      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+    }
+  };
+
   const items = [
     getItem(<Link to={'/'}>Dashboard</Link>, 'dashboard', <AppstoreOutlined />),
     getItem(<Link to ={'/tondauky'}>Tồn kho sách đầu kỳ</Link>, 'tondauky', <HomeOutlined />),
@@ -55,11 +68,10 @@ const Navbar = (props) =>{
       getItem(<Link to={'/hocky'}>Học kỳ</Link>, 'hocky'),
       getItem(<Link to={'/nhomdoituong'}>Nhóm đối tượng</Link>, 'nhomdoituong'),
       getItem(<Link to={'/doituong'}>Đối tượng</Link>, 'doituong'), 
-      getItem(<Link to={'/khoa'}>Khoa/ Phòng ban</Link>, 'khoa'), 
       getItem(<Link to={'/loaisach'}>Loại hình sách</Link>, 'loaisach'), 
       getItem(<Link to={'/sach'}>Sách</Link>, 'sach'), 
       getItem(<Link to={'/nhanvien'}>Nhân viên</Link>, 'nhanvien'), 
-      getItem(<Link to={'/coso'}>Cơ sở</Link>, 'coso'), 
+      getItem(<Link to={'/coso'}>Cơ sở thư viện</Link>, 'coso'), 
     ]),
     getItem('Quản lý nhập', 'quanlynhap', <ContainerOutlined />, [
       getItem(<Link to={'/phieunhapmua'}>Nhập mua</Link>, 'phieunhapmua'),
@@ -102,8 +114,9 @@ const Navbar = (props) =>{
       <Menu
         theme="dark"
         mode="inline"
+        openKeys={openKeys}
+        onOpenChange={onOpenChange}
         defaultSelectedKeys = {['dashboard']}
-        // defaultOpenKeys={['danhmuc', 'quanlynhap', 'quanlyxuat', 'baocao', 'quantri', 'caidat']}
         items={items}
       />
       <div className={styles.version}>

@@ -4,7 +4,7 @@ import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
-const NhomDoiTuong = () =>{
+const LoaiHinhSach = () =>{
   
   const [openModalContact, setOpenModalContact] = useState(false)
 
@@ -13,19 +13,19 @@ const NhomDoiTuong = () =>{
   }
 
   const data = [{
-    TENNHOMDOITUONG: "NHA XUAT BAN",
+    TENLOAIHINHSACH: "Sách phát hành",
     STATUS: "active"
   },
   {
-   TENNHOMDOITUONG: "NHA IN",
+    TENLOAIHINHSACH: "Sách bán",
    STATUS: "delete"
   }]
 
   const columns = [
     {
-      title: 'Tên nhóm đối tượng',
-      dataIndex: 'TENNHOMDOITUONG',
-      key: 'TENNHOMDOITUONG',
+      title: 'Tên loại hình sách',
+      dataIndex: 'TENLOAIHINHSACH',
+      key: 'TENLOAIHINHSACH',
     },
     {
       title: 'Tình trạng',
@@ -42,8 +42,8 @@ const NhomDoiTuong = () =>{
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button key={record.TENNHOMDOITUONG} type="link" onClick= {() => console.log(record.TENNHOMDOITUONG)}>Cập nhật</Button>
-          <Button key={record.TENNHOMDOITUONG} type="link" danger  onClick= {() => console.log(record.TENNHOMDOITUONG)}>Xóa</Button>
+          <Button key={record.TENLOAIHINHSACH} type="link" onClick= {() => console.log(record.TENLOAIHINHSACH)}>Cập nhật</Button>
+          <Button key={record.TENLOAIHINHSACH} type="link" danger  onClick= {() => console.log(record.TENLOAIHINHSACH)}>Xóa</Button>
         </Space>
       ),
     },
@@ -51,7 +51,7 @@ const NhomDoiTuong = () =>{
 
   return(
     <>
-      <Title level={3}>Nhóm đối tượng</Title>
+      <Title level={3}>Loại hình sách</Title>
       <Divider />
       <VStack justifyContent={"start"} alignItems="start">
       <Space align="left" style={{ marginBottom: 16 }}>
@@ -66,7 +66,7 @@ const NhomDoiTuong = () =>{
       {/* Modal thêm mới */}
       <Modal
         open={openModalContact}
-        title="Thêm mới nhóm đối tượng"
+        title="Thêm mới loại hình sách"
         // onOk={submitChangeEmail}
         onCancel={toogleModalFormContact}
         footer={null}
@@ -74,7 +74,7 @@ const NhomDoiTuong = () =>{
       <Form
           name="basic"
           labelCol={{
-            span: 8,
+            span: 6,
           }}
           wrapperCol={{
             span: 20,
@@ -86,12 +86,12 @@ const NhomDoiTuong = () =>{
           // onFinish={submitContact}
         >
           <Form.Item
-            label="Tên nhóm đối tượng: "
-            name="TENNHOMDOITUONG"
+            label="Tên loại hình sách: "
+            name="TENLOAIHINHSACH"
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập tên nhóm đối tượng!'
+                message: 'Vui lòng nhập tên loại hình sách!'
               },
             ]}
           >
@@ -108,4 +108,4 @@ const NhomDoiTuong = () =>{
   )
 }
 
-export default NhomDoiTuong;
+export default LoaiHinhSach;

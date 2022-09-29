@@ -1,9 +1,12 @@
 import React from "react";
+import { Divider, Typography } from 'antd';
 
+const { Title } = Typography;
 const Dashboard = () =>{
   return(
     <>
-      <p>Dashboard</p>
+      <Title level={3}>Dashboard</Title>
+      <Divider />
     </>
   )
 }

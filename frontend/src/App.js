@@ -10,9 +10,16 @@ import {
 
 import RoutesApp from './routes';
 import LayoutApp from './components/Layout';
+
 import Login from './containers/Login';
+
 import Dashboard from './containers/Dashboard';
+
 import NhomDoiTuong from './containers/List/NhomDoiTuong';
+import LoaiHinhSach from './containers/List/LoaiHinhSach';
+import CoSo from './containers/List/CoSo';
+import HocKy from './containers/List/HocKy';
+import DoiTuong from './containers/List/DoiTuong';
 
 const App = (props) => {
   
@@ -21,9 +28,13 @@ const App = (props) => {
     <ChakraProvider theme={theme}>
       <Router>        
         <Routes>
+        <Route path='/login' element ={<Login />}/>
           <Route path='/' element ={<LayoutApp component ={<Dashboard />} />}/>
           <Route path='nhomdoituong' element ={<LayoutApp component ={<NhomDoiTuong />} />}/>
-          
+          <Route path='loaisach' element ={<LayoutApp component ={<LoaiHinhSach />} />}/>
+          <Route path='coso' element ={<LayoutApp component ={<CoSo />} />}/>
+          <Route path='hocky' element ={<LayoutApp component ={<HocKy />} />}/>
+          <Route path='doituong' element ={<LayoutApp component ={<DoiTuong />} />}/>
         {/* {RoutesApp['admin'].map((item) =>(
           <Route 
             key ={item.key}
