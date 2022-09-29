@@ -84,19 +84,27 @@ const HeaderApp = (props) => {
                   </Breadcrumb.Item>
               }
               {pathname==='/coso' && <Breadcrumb.Item fontSize="18px">
-                Cơ sở
+                Cơ sở thư viện
                   </Breadcrumb.Item>
                 }
               {pathname==='/loaisach' && <Breadcrumb.Item fontSize="18px">
                 Loại hình sách
                 </Breadcrumb.Item>
               }
-              {pathname==='/profile' && <Breadcrumb.Item fontSize="18px">
-                Trang cá nhân
+              {pathname==='/doituong' && <Breadcrumb.Item fontSize="18px">
+                Đối tượng
                 </Breadcrumb.Item>
               }
-              {pathname==='/employees' && <Breadcrumb.Item fontSize="18px">
+              {pathname==='/hocky' && <Breadcrumb.Item fontSize="18px">
+                Học kỳ
+                </Breadcrumb.Item>
+              }
+              {pathname==='/nhanvien' && <Breadcrumb.Item fontSize="18px">
                 Nhân viên
+                </Breadcrumb.Item>
+              }
+              {pathname==='/sach' && <Breadcrumb.Item fontSize="18px">
+                Sách
                 </Breadcrumb.Item>
               }
               {pathname==='/employees/create' && <><Breadcrumb.Item fontSize="18px">
