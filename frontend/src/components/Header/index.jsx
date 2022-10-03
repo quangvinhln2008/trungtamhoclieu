@@ -107,6 +107,10 @@ const HeaderApp = (props) => {
                 Sách
                 </Breadcrumb.Item>
               }
+               {pathname==='/tondauky' && <Breadcrumb.Item fontSize="18px">
+                Tồn kho sách đầu kỳ
+                </Breadcrumb.Item>
+              }
               {pathname==='/employees/create' && <><Breadcrumb.Item fontSize="18px">
                   <Link  href={'/employees'}>Nhân viên</Link>
                 </Breadcrumb.Item>
