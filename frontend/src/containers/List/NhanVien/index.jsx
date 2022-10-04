@@ -115,6 +115,7 @@ const NhanVien = () =>{
           autoComplete="off"
           // onFinish={submitContact}
         >
+          <Divider plain>Thông tin nhân viên</Divider>
           <Form.Item
             label="Mã nhân viên: "
             name="MANV"
@@ -152,6 +153,7 @@ const NhanVien = () =>{
           >
           <Input  />
           </Form.Item>
+          <Divider plain>Thông tin đăng nhập</Divider>
           <Form.Item
             label="Tên đăng nhập: "
             name="TENDANGNHAP"
