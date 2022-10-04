@@ -4,9 +4,13 @@ const jwt = require("jsonwebtoken");
 
 async function create(req, res) {
   try{
-    const MaLoaiHinhSach = uuidv4()
-    const TenLoaiHinhSach = req.body.TenLoaiHinhSach
-
+    const MaSach = uuidv4()
+    const TenSach = req.body.TenSach
+    const MaDoiTuong = req.body.MaDoiTuong
+    const NamXuatBan = req.body.NamXuatBan
+    const Barcode = req.body.Barcode
+    const GiaBan = req.body.GiaBan
+    
     // //Check authorized
     // var roles
     // jwt.verify(token, 'tracuu', (err, decoded) => {
@@ -24,9 +28,13 @@ async function create(req, res) {
 
     const pool = await poolPromise
     await pool.request()
-    .input('MaLoaiHinhSach', MaLoaiHinhSach)
-    .input('TenLoaiHinhSach', TenLoaiHinhSach)
-    .execute('sp_CreateLoaiHinhSach', (err, result)=>{
+    .input('MaSach', MaSach)
+    .input('TenSach', TenSach)
+    .input('MaDoiTuong', MaDoiTuong)
+    .input('NamXuatBan', NamXuatBan)
+    .input('Barcode', Barcode)
+    .input('GiaBan', GiaBan)
+    .execute('sp_CreateSach', (err, result)=>{
       if (err) {
           res.status(500).send({ message: err });
           return;
@@ -44,13 +52,21 @@ async function create(req, res) {
 async function update(req, res) {
   try{
       const {id} = req.params
-      const TenLoaiHinhSach = req.body.TenLoaiHinhSach
+      const TenSach = req.body.TenSach
+      const MaDoiTuong = req.body.MaDoiTuong
+      const NamXuatBan = req.body.NamXuatBan
+      const Barcode = req.body.Barcode
+      const GiaBan = req.body.GiaBan
 
       const pool = await poolPromise
       await pool.request()
-      .input('MaLoaiHinhSach', id)
-      .input('TenLoaiHinhSach', TenLoaiHinhSach)
-      .execute('sp_UpdateLoaiHinhSach', (err, result)=>{
+      .input('MaSach', id)
+      .input('TenSach', TenSach)
+      .input('MaDoiTuong', MaDoiTuong)
+      .input('NamXuatBan', NamXuatBan)
+      .input('Barcode', Barcode)
+      .input('GiaBan', GiaBan)
+      .execute('sp_UpdateSach', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -65,13 +81,13 @@ async function update(req, res) {
   }
 }
 
-async function deleteLoaiHinhSach(req, res) {
+async function deleteSach(req, res) {
   try{
     const {id} = req.params
       const pool = await poolPromise
       await pool.request()
-      .input('MaLoaiHinhSach', id)
-      .execute('sp_DeleteLoaiHinhSach', (err, result)=>{
+      .input('MaSach', id)
+      .execute('sp_DeleteSach', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -85,11 +101,11 @@ async function deleteLoaiHinhSach(req, res) {
     res.status(500).send(error.message)
   }
 }
-async function getLoaiHinhSach(req, res) {
+async function getSach(req, res) {
   try{
       const pool = await poolPromise
       await pool.request()
-      .execute('sp_GetLoaiHinhSach', (err, result)=>{
+      .execute('sp_GetSach', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -104,13 +120,13 @@ async function getLoaiHinhSach(req, res) {
   }
 }
 
-async function getLoaiHinhSachById(req, res) {
+async function getSachById(req, res) {
   try{
     const {id} = req.params
       const pool = await poolPromise
       await pool.request()
-      .input('MaLoaiHinhSach', id)
-      .execute('sp_GetLoaiHinhSachById', (err, result)=>{
+      .input('MaSach', id)
+      .execute('sp_GetSachById', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -129,7 +145,7 @@ async function getLoaiHinhSachById(req, res) {
 module.exports = {
   create,
   update,
-  deleteLoaiHinhSach,
-  getLoaiHinhSachById,
-  getLoaiHinhSach
+  deleteSach,
+  getSachById,
+  getSach
 }

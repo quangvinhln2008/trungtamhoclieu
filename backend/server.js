@@ -3,6 +3,12 @@ const cors = require('cors');
 
 const authRouter = require('./routes/authRouter');
 const nhomDoiTuongRouter = require('./routes/nhomDoiTuongRouter');
+const loaiHinhSachRouter = require('./routes/loaiHinhSachRouter');
+const coSoRouter = require('./routes/coSoRouter');
+const hocKyRouter = require('./routes/hocKyRouter');
+const doiTuongRouter = require('./routes/doiTuongRouter');
+const sachRouter = require('./routes/sachRouter');
+const nhanVienRouter = require('./routes/nhanVienRouter');
 
 const port = process.env.PORT === 'production' ? (dotenv.PORT || 80) : 3001;
 var app = express();
@@ -19,3 +25,9 @@ app.listen(process.env.PORT || port , (err) => {
 //user login router in /routes/loginRouter.js
 app.use('/user/', authRouter)
 app.use('/nhomdoituong/', nhomDoiTuongRouter)
+app.use('/loaihinhsach/', loaiHinhSachRouter)
+app.use('/coso/', coSoRouter)
+app.use('/hocky/', hocKyRouter)
+app.use('/doituong/', doiTuongRouter)
+app.use('/sach/', sachRouter)
+app.use('/nhanvien/', nhanVienRouter)

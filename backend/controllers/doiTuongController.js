@@ -4,9 +4,9 @@ const jwt = require("jsonwebtoken");
 
 async function create(req, res) {
   try{
-    const MaLoaiHinhSach = uuidv4()
-    const TenLoaiHinhSach = req.body.TenLoaiHinhSach
-
+    const MaDoiTuong = uuidv4()
+    const TenDoiTuong = req.body.TenDoiTuong
+    const MaNhomDoiTuong = req.body.MaNhomDoiTuong
     // //Check authorized
     // var roles
     // jwt.verify(token, 'tracuu', (err, decoded) => {
@@ -20,13 +20,14 @@ async function create(req, res) {
     //   return res.status(500).send({
     //     message: 'Không có quyền truy cập!'
     //   })
-    // } 
+    // }
 
     const pool = await poolPromise
     await pool.request()
-    .input('MaLoaiHinhSach', MaLoaiHinhSach)
-    .input('TenLoaiHinhSach', TenLoaiHinhSach)
-    .execute('sp_CreateLoaiHinhSach', (err, result)=>{
+    .input('MaDoiTuong', MaDoiTuong)
+    .input('TenDoiTuong', TenDoiTuong)
+    .input('MaNhomDoiTuong', MaNhomDoiTuong)
+    .execute('sp_CreateDoiTuong', (err, result)=>{
       if (err) {
           res.status(500).send({ message: err });
           return;
@@ -44,13 +45,15 @@ async function create(req, res) {
 async function update(req, res) {
   try{
       const {id} = req.params
-      const TenLoaiHinhSach = req.body.TenLoaiHinhSach
+      const TenDoiTuong = req.body.TenDoiTuong
+      const MaNhomDoiTuong = req.body.MaNhomDoiTuong
 
       const pool = await poolPromise
       await pool.request()
-      .input('MaLoaiHinhSach', id)
-      .input('TenLoaiHinhSach', TenLoaiHinhSach)
-      .execute('sp_UpdateLoaiHinhSach', (err, result)=>{
+      .input('MaDoiTuong', id)
+      .input('TenDoiTuong', TenDoiTuong)
+      .input('MaNhomDoiTuong', MaNhomDoiTuong)
+      .execute('sp_UpdateDoiTuong', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -65,13 +68,13 @@ async function update(req, res) {
   }
 }
 
-async function deleteLoaiHinhSach(req, res) {
+async function deleteDoiTuong(req, res) {
   try{
     const {id} = req.params
       const pool = await poolPromise
       await pool.request()
-      .input('MaLoaiHinhSach', id)
-      .execute('sp_DeleteLoaiHinhSach', (err, result)=>{
+      .input('MaDoiTuong', id)
+      .execute('sp_DeleteDoiTuong', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -85,11 +88,11 @@ async function deleteLoaiHinhSach(req, res) {
     res.status(500).send(error.message)
   }
 }
-async function getLoaiHinhSach(req, res) {
+async function getDoiTuong(req, res) {
   try{
       const pool = await poolPromise
       await pool.request()
-      .execute('sp_GetLoaiHinhSach', (err, result)=>{
+      .execute('sp_GetDoiTuong', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -104,13 +107,13 @@ async function getLoaiHinhSach(req, res) {
   }
 }
 
-async function getLoaiHinhSachById(req, res) {
+async function getDoiTuongById(req, res) {
   try{
     const {id} = req.params
       const pool = await poolPromise
       await pool.request()
-      .input('MaLoaiHinhSach', id)
-      .execute('sp_GetLoaiHinhSachById', (err, result)=>{
+      .input('MaDoiTuong', id)
+      .execute('sp_GetDoiTuongById', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -129,7 +132,7 @@ async function getLoaiHinhSachById(req, res) {
 module.exports = {
   create,
   update,
-  deleteLoaiHinhSach,
-  getLoaiHinhSachById,
-  getLoaiHinhSach
+  deleteDoiTuong,
+  getDoiTuongById,
+  getDoiTuong
 }
