@@ -194,7 +194,18 @@ const NhomDoiTuong = () =>{
           </Button>
         </Space>
         <Divider />
-        <Table columns={columns} dataSource={data} />
+        {loading ? 
+            <>
+              <Spin tip="Loading..." spinning={loading}>
+                <Alert
+                  message="Đang lấy dữ liệu"
+                  description="Vui lòng chờ trong giây lát."
+                  type="info"
+                />
+              </Spin>
+            </> 
+            :
+              <Table columns={columns} dataSource={data} />}
       </VStack>
 
       {/* Modal thêm mới */}
