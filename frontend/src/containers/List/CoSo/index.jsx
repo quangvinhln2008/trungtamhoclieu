@@ -215,7 +215,7 @@ const CoSo = () =>{
       {/* Modal form */}
       <Modal
         open={openModalContact}
-        title={!editMode ? "Thêm mới cơ sở thư viện" : "Cập nhật cơ sở thư viên"}
+        title={!editMode ? "Thêm mới cơ sở thư viện" : "Cập nhật cơ sở thư viện"}
         onCancel={toogleModalFormContact}
         footer={null}
       >
