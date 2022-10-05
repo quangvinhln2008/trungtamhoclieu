@@ -5,9 +5,8 @@ const jwt = require("jsonwebtoken");
 async function create(req, res) {
   try{
     const MaCoSo = uuidv4()
-    const TenCoSo = req.body.TencoSo
+    const TenCoSo = req.body.TenCoSo
     const DiaChiCoSo = req.body.DiaChiCoSo
-
     // //Check authorized
     // var roles
     // jwt.verify(token, 'tracuu', (err, decoded) => {
@@ -22,7 +21,6 @@ async function create(req, res) {
     //     message: 'Không có quyền truy cập!'
     //   })
     // } 
-
     const pool = await poolPromise
     await pool.request()
     .input('MaCoSo', MaCoSo)

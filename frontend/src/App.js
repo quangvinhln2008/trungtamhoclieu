@@ -2,6 +2,10 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from '@chakra-ui/react';
 import 'antd/dist/antd.css';
 import './styles/globals.css'
+
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -59,6 +63,7 @@ const App = (props) => {
         } */}
         </Routes>
       </Router>
+      <ToastContainer autoClose={1000} theme="colored" />
     </ChakraProvider>
   );
   
