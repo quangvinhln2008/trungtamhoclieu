@@ -1,66 +1,194 @@
 import React, {useState, useEffect} from "react";
-import { Divider, Typography, Button, Select, Modal, Space, Input, Table, Form, Tag } from 'antd';
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { Divider, Typography, Button, Select, Modal, Space, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
+const { Option } = Select;
+
 const Sach = () =>{
   
+  const [form] = Form.useForm();
+  const [data, setData] = useState()
+  const [editMode, setEditMode] = useState(false)
+  const [dataEdit, setDataEdit] = useState()
+  const [dataDoiTuong, setDataDoiTuong] = useState()
+  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
+  const [options, setOption] = useState()
+
+  function toogleModalFormContact(){
+    setOpenModalContact(!openModalContact)
+  }
+  
+  useEffect(()=>{
+    loadSach()
+  },[refresh])
+
+  useEffect(()=>{
+    
+    setOption(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+
+    form.setFieldsValue({
+        TenSach: dataEdit?.TenSach,
+        MaDoiTuong: dataEdit?.MaDoiTuong,
+        NamXuatBan: dataEdit?.NamXuatBan,
+        Barcode : dataEdit?.Barcode,
+        GiaBan : dataEdit?.GiaBan
+    })
+  }, [dataEdit])
 
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
 
-  const data = [
-    {
-      TENSACH: "Kinh tế vi mô 1",
-      NHASUATBAN: 'NXB Kinh tế',
-      NAMXUATBAN: '2021',
-      STATUS: "active"
-    },
-    {
-      TENSACH: "Kinh tế vi mô 1",
-      NHASUATBAN: 'NXB Kinh tế',
-      NAMXUATBAN: '2021',
-      STATUS: "active"
-    },
-    {
-      TENSACH: "Kinh tế vi mô 1",
-      NHASUATBAN: 'NXB Kinh tế',
-      NAMXUATBAN: '2021',
-      STATUS: "active"
-    },
-    {
-      TENSACH: "Kinh tế vi mô 1",
-      NHASUATBAN: 'NXB Kinh tế',
-      NAMXUATBAN: '2021',
-      STATUS: "active"
-    }]
+  function openCreateMode(){
+    setEditMode(false)
+    setOpenModalContact(!openModalContact)
+
+    setOption(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    form.setFieldsValue({
+      TenSach: "",
+      MaDoiTuong: "",
+      NamXuatBan: "",
+      Barcode : "",
+      GiaBan : 0
+    })
+  }
+
+  async function loadSach(){
+    return await axios
+      .get('http://localhost:3001/Sach')
+      .then((res) => {
+        const result = {
+          status: res.data.status,
+          data: res.data.result.recordsets,
+        }
+        setData(result.data[0])
+        setDataDoiTuong(result.data[1])
+        
+        setLoading(false)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+      })
+  }
+
+  async function GetSachEdit(MaSach){
+    setEditMode(true)
+    return await axios
+      .get(`http://localhost:3001/Sach/${MaSach}`)
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        setDataEdit(result.data[0])
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+
+  async function CreateSach(values){
+    return await axios
+      .post('http://localhost:3001/Sach/create', {TenSach: values.TenSach, MaDoiTuong: values.MaDoiTuong, NamXuatBan: values.NamXuatBan, Barcode: values.Barcode, GiaBan: values.GiaBan})
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+
+  async function UpdateSach(values){
+    console.log('run update')
+    return await axios
+      .post(`http://localhost:3001/Sach/${dataEdit?.MaSach}`, {TenSach: values.TenSach, MaDoiTuong: values.MaDoiTuong, NamXuatBan: values.NamXuatBan, Barcode: values.Barcode, GiaBan: values.GiaBan})
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+
+  async function DeleteSach(MaSach){
+    return await axios
+      .post(`http://localhost:3001/Sach/delete/${MaSach}`)
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+  
 
   const columns = [
     {
       title: 'Tên sách',
-      dataIndex: 'TENSACH',
-      key: 'TENSACH',
+      dataIndex: 'TenSach',
+      key: 'TenSach',
     },
     {
       title: 'NXB/ Nhà in',
-      dataIndex: 'NHASUATBAN',
-      key: 'NHASUATBAN',
+      dataIndex: 'TenDoiTuong',
+      key: 'TenDoiTuong',
     },
     {
       title: 'Năm xuất bản',
-      dataIndex: 'NAMXUATBAN',
-      key: 'NAMXUATBAN',
+      dataIndex: 'NamXuatBan',
+      key: 'NamXuatBan',
+    },
+    {
+      title: 'Giá phát hành',
+      dataIndex: 'GiaBan',
+      align:'right',
+      key: 'GiaBan',
     },
     {
       title: 'Tình trạng',
-      key: 'STATUS',
-      dataIndex: 'STATUS',
-      render: (_, { STATUS }) => (                   
-          <Tag color={STATUS === 'active' ? 'green' : 'volcano'} key={STATUS}>
-            {STATUS.toUpperCase()}
+      key: 'Is_Deleted',
+      dataIndex: 'Is_Deleted',
+      render: (_, record) => (                   
+          <Tag color={record.Is_Deleted ? 'volcano' :'green'} key={record.MaCoSo}>
+            {record.Is_Deleted ? 'DELETED': 'ACTIVE'}
           </Tag>         
       )
     },
@@ -68,10 +196,24 @@ const Sach = () =>{
       title: '',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <Button key={record.TENSACH} type="link" onClick= {() => console.log(record.TENSACH)}>Cập nhật</Button>
-          <Button key={record.TENSACH} type="link" danger  onClick= {() => console.log(record.TENSACH)}>Xóa</Button>
-        </Space>
+        <>
+          <Space size="middle">
+            {!record.Is_Deleted && <Button key={record.MaSach} type="link" onClick= {() =>{GetSachEdit(record.MaSach)}}>Cập nhật</Button>}
+          </Space>
+          <Space size="middle">
+          {!record.Is_Deleted && <>
+              <Popconfirm
+                title="Bạn có chắc xóa cơ sở không?"
+                onConfirm={()=>{DeleteSach(record.MaSach)}}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button key={record.MaSach} type="link" danger >Xóa</Button>
+              </Popconfirm>
+            </>}
+          </Space>
+        </>
+        
       ),
     },
   ];
@@ -82,7 +224,7 @@ const Sach = () =>{
       <Divider />
       <VStack justifyContent={"start"} alignItems="start">
         <Space align="left" style={{ marginBottom: 16 }}>
-          <Button  onClick={toogleModalFormContact}  type="primary" icon={<PlusCircleOutlined />}>
+          <Button  onClick={openCreateMode}  type="primary" icon={<PlusCircleOutlined />}>
               Thêm mới
           </Button>
           <Button  onClick={toogleModalFormContact} icon={<SearchOutlined />}>
@@ -90,34 +232,41 @@ const Sach = () =>{
           </Button>
         </Space>
         <Divider />
-        <Table columns={columns} dataSource={data} />
+        {loading ? 
+            <>
+              <Spin tip="Loading..." spinning={loading}>
+                <Alert
+                  message="Đang lấy dữ liệu"
+                  description="Vui lòng chờ trong giây lát."
+                  type="info"
+                />
+              </Spin>
+            </> 
+            :
+              <Table columns={columns} dataSource={data} />}
       </VStack>
 
       {/* Modal thêm mới */}
-      <Modal
+      <Modal 
         open={openModalContact}
-        title="Thêm mới sách"
+        title={!editMode ? "Thêm mới sách" : "Cập nhật sách"}
         // onOk={submitChangeEmail}
         onCancel={toogleModalFormContact}
         footer={null}
       >
-      <Form
-          name="basic"
+      <Form form={form} 
+          name="control-hooks"
           labelCol={{
             span: 8,
           }}
           wrapperCol={{
             span: 20,
           }}
-          initialValues={{
-            remember: true,
-          }}
-          autoComplete="off"
-          // onFinish={submitContact}
+          onFinish={!editMode? CreateSach: UpdateSach}
         >
           <Form.Item
             label="Tên sách: "
-            name="TENSACH"
+            name="TenSach"
             rules={[
               {
                 required: true,
@@ -130,26 +279,36 @@ const Sach = () =>{
           
           <Form.Item
             label="Nhà xuất bản/ Nhà in: "
-            name="NHAXUATBAN"
+            name="MaDoiTuong"
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập NXB!'
+                message: 'Vui lòng chọn NXB!'
               },
             ]}
           >
-          <Input  />
+          <Select 
+            showSearch 
+            optionFilterProp="children"
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+            filterSort={(optionA, optionB) =>
+              optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+            }
+
+            >
+              {options}
+            </Select>
           </Form.Item>
           <Form.Item
             label="Năm xuất bản: "
-            name="NAMXUATBAN"
+            name="NamXuatBan"
             
           >
           <Input  />
           </Form.Item>
           <Form.Item
             label="Barcode: "
-            name="BARCODE"
+            name="Barcode"
             rules={[
               {
                 required: true,
@@ -160,12 +319,12 @@ const Sach = () =>{
           <Input  />
           </Form.Item>
           <Form.Item
-            label="Giá bán: "
-            name="GIABAN"
+            label="Giá phát hành: "
+            name="GiaBan"
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập giá bán!'
+                message: 'Vui lòng nhập giá phát hành!'
               },
             ]}
           >

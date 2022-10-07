@@ -1,6 +1,7 @@
 const {sql, poolPromise } = require('../config/db.js')
 const { v4: uuidv4 } = require('uuid');
 const jwt = require("jsonwebtoken");
+const moment = require("moment")
 
 async function create(req, res) {
   try{
@@ -112,6 +113,15 @@ async function getHocKy(req, res) {
   }
 }
 
+function responseHocKyToFE(HocKy){
+  console.log(HocKy)
+  return{
+    MaHocKy:HocKy.MaHocKy,
+    TenHocKy:HocKy.TenHocKy,
+    TuNgay: moment(HocKy.TuNgay).format("YYYY-MM-DD"),
+    DenNgay: moment(HocKy.DenNgay).format("YYYY-MM-DD")
+  }
+}
 async function getHocKyById(req, res) {
   try{
     const {id} = req.params
@@ -123,7 +133,7 @@ async function getHocKyById(req, res) {
             res.status(500).send({ message: err });
             return;
           }
-
+          
           return res.status(200).send({
             result
           });

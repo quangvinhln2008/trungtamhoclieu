@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import moment from 'moment'
 import { Divider, Typography, Button, Alert, Modal, Space, Input, Table, Form, Tag, Spin, Popconfirm, DatePicker  } from 'antd';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
@@ -19,12 +20,13 @@ const HocKy = () =>{
   useEffect(()=>{
     loadHocKy()
   },[refresh])
-console.log('dataEdit', dataEdit)
-  useEffect(()=>{
+  
+useEffect(()=>{
+    
     form.setFieldsValue({
         TenHocKy: dataEdit?.TenHocKy,
-        TuNgay: dataEdit?.TuNgay.format('YYYY-MM-DD'),
-        DenNgay: dataEdit?.DenNgay.format('YYYY-MM-DD')
+        TuNgay: moment(dataEdit?.TuNgay, 'YYYY/MM/DD'),
+        DenNgay: moment(dataEdit?.DenNgay, 'YYYY/MM/DD')
     })
   }, [dataEdit])
 
@@ -62,16 +64,18 @@ console.log('dataEdit', dataEdit)
   }
 
   async function GetHocKyEdit(MaHocKy){
+    
     setEditMode(true)
     return await axios
       .get(`http://localhost:3001/hocky/${MaHocKy}`)
       .then((res) => {
         const result = {
           status: res.status,
-          data: res.data.result.recordset,
+          data: res.data.result.recordset[0],
         }
-        setDataEdit(result.data[0])
+        setDataEdit(result.data)
         setOpenModalContact(!openModalContact)
+
         return(result)
       })
       .catch(function (error) {
@@ -155,7 +159,7 @@ console.log('dataEdit', dataEdit)
     },{
       title: 'Đến ngày',
       dataIndex: 'DenNgay',
-      key: 'DDenNgayENGAY',
+      key: 'DenNgay',
     },
     {
       title: 'Tình trạng',
@@ -257,7 +261,7 @@ console.log('dataEdit', dataEdit)
               },
             ]}
           >
-            <DatePicker />
+            <DatePicker format={"DD-MM-YYYY"}   />
           </Form.Item>
           <Form.Item
             label="Đến ngày: "
@@ -269,7 +273,7 @@ console.log('dataEdit', dataEdit)
               },
             ]}
           >
-            <DatePicker />
+            <DatePicker format={"DD-MM-YYYY"} />
           </Form.Item>
           <HStack justifyContent="end">
             <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>

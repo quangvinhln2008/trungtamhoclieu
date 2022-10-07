@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 async function create(req, res) {
   try{
-    const MaNhanVien = uuidv4()
+    const MaNhanVien = req.body.MaNhanVien
     const TenNhanVien = req.body.TenNhanVien
     const MaCoSo = req.body.MaCoSo
     const TenDangNhap = req.body.TenDangNhap
