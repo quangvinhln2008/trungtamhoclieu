@@ -203,7 +203,7 @@ const Sach = () =>{
           <Space size="middle">
           {!record.Is_Deleted && <>
               <Popconfirm
-                title="Bạn có chắc xóa cơ sở không?"
+                title="Bạn có chắc xóa sách không?"
                 onConfirm={()=>{DeleteSach(record.MaSach)}}
                 okText="Yes"
                 cancelText="No"

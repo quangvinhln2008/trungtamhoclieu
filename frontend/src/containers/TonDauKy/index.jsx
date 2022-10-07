@@ -1,85 +1,222 @@
 import React, {useState, useEffect} from "react";
-import { Divider, Typography, Button, Select, Modal, Space, Input, InputNumber, Table, Form, Tag, DatePicker } from 'antd';
+import axios from 'axios'
+import moment from 'moment'
+import { toast } from 'react-toastify'
+import { Divider, Typography, Button, Select, Modal, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
+const { Option } = Select;
+
 const TonDauKy = () =>{
   
+  const [form] = Form.useForm();
+  const [data, setData] = useState()
+  const [editMode, setEditMode] = useState(false)
+  const [dataEdit, setDataEdit] = useState()
+  const [dataSach, setDataSach] = useState()
+  const [dataCoSo, setDataCoSo] = useState()
+  const [dataLoaiHinhSach, setDataLoaiHinhSach] = useState()
+  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
+  const [optionsSach, setOptionSach] = useState()
+  const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
+  const [optionsCoSo, setOptionCoSo] = useState()
 
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
 
-  const data = [
-    {
-      NGAYCT:"2022-10-01",
-      TENCOSO: "778 Nguyễn Kiệm",
-      LOAIHINHSACH: 'Sách phát hành',
-      TENSACH: 'Kinh tế vi mô 1',
-      SOLUONGTON: '10',
-      DONGIATON: '35000',
-      STATUS: "active"
-    },
-    {
-      NGAYCT:"2022-10-01",
-      TENCOSO: "778 Nguyễn Kiệm",
-      LOAIHINHSACH: 'Sách phát hành',
-      TENSACH: 'Kinh tế vi mô 1',
-      SOLUONGTON: '10',
-      DONGIATON: '35000',
-      STATUS: "active"
-    },
-    {
-      NGAYCT:"2022-10-01",
-      TENCOSO: "778 Nguyễn Kiệm",
-      LOAIHINHSACH: 'Sách phát hành',
-      TENSACH: 'Kinh tế vi mô 1',
-      SOLUONGTON: '10',
-      DONGIATON: '35000',
-      STATUS: "active"
-    },
-    {
-      NGAYCT:"2022-10-01",
-      TENCOSO: "778 Nguyễn Kiệm",
-      LOAIHINHSACH: 'Sách phát hành',
-      TENSACH: 'Kinh tế vi mô 1',
-      SOLUONGTON: '10',
-      DONGIATON: '35000',
-      STATUS: "active"
-    }]
+  useEffect(()=>{
+    loadTonDauKy()
+  },[refresh])
 
+  useEffect(()=>{
+    
+    setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+
+    form.setFieldsValue({
+        NgayCt: moment(dataEdit?.NgayCt, 'YYYY/MM/DD'),
+        MaSach: dataEdit?.MaSach,
+        MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
+        MaCoSo : dataEdit?.MaCoSo,
+        SoLuongTon : dataEdit?.SoLuongTon,
+        DonGiaTon: dataEdit?.DonGiaTon
+    })
+  }, [dataEdit])
+
+  function toogleModalFormContact(){
+    setOpenModalContact(!openModalContact)
+  }
+
+  function openCreateMode(){
+    setEditMode(false)
+    setOpenModalContact(!openModalContact)
+
+    setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+
+    form.setFieldsValue({
+        NgayCt: "",
+        MaSach: "",
+        MaLoaiHinhSach: "",
+        MaCoSo : "",
+        SoLuongTon : "",
+        DonGiaTon: ""
+    })
+  }
+
+  async function loadTonDauKy(){
+    return await axios
+      .get('http://localhost:3001/TonDauKy')
+      .then((res) => {
+        const result = {
+          status: res.data.status,
+          data: res.data.result.recordsets,
+        }
+        setData(result.data[0])
+        setDataCoSo(result.data[1])
+        setDataLoaiHinhSach(result.data[2])
+        setDataSach(result.data[3])
+        setLoading(false)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+      })
+  }
+
+  async function GetTonDauKyEdit(MaTonDauKy){
+    console.log('id', MaTonDauKy)
+    setEditMode(true)
+    return await axios
+      .get(`http://localhost:3001/TonDauKy/${MaTonDauKy}`)
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        setDataEdit(result.data[0])
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+
+  async function CreateTonDauKy(values){
+    return await axios
+      .post('http://localhost:3001/TonDauKy/create', {
+        NgayCt: values.NgayCt, 
+        MaLoaiHinhSach: values.MaLoaiHinhSach, 
+        MaCoSo: values.MaCoSo, 
+        MaSach: values.MaSach, 
+        SoLuongTon: values.SoLuongTon, 
+        DonGiaTon: values.DonGiaTon})
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+
+  async function UpdateTonDauKy(values){
+    console.log('run update')
+    return await axios
+      .post(`http://localhost:3001/TonDauKy/${dataEdit?.Id}`, {
+        NgayCt: values.NgayCt.format('YYYY-MM-DD'), 
+        MaLoaiHinhSach: values.MaLoaiHinhSach, 
+        MaCoSo: values.MaCoSo, 
+        MaSach: values.MaSach, 
+        SoLuongTon: values.SoLuongTon, 
+        DonGiaTon: values.DonGiaTon})
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+
+  async function DeleteTonDauKy(MaTonDauKy){
+    return await axios
+      .post(`http://localhost:3001/TonDauKy/delete/${MaTonDauKy}`)
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+  
   const columns = [
     {
       title: 'Ngày tồn',
-      dataIndex: 'NGAYCT',
-      key: 'NGAYCT',
+      dataIndex: 'NgayCt',
+      key: 'NgayCt',
     },
     {
       title: 'Cơ sở',
-      dataIndex: 'TENCOSO',
-      key: 'TENCOSO',
+      dataIndex: 'TenCoSo',
+      key: 'TenCoSo',
     },
     {
       title: 'Loại hình sách',
-      dataIndex: 'LOAIHINHSACH',
-      key: 'LOAIHINHSACH',
+      dataIndex: 'TenLoaiHinhSach',
+      key: 'TenLoaiHinhSach',
     },
     {
       title: 'Tên sách',
-      dataIndex: 'TENSACH',
-      key: 'TENSACH',
+      dataIndex: 'TenSach',
+      key: 'TenSach',
     },
     {
       title: 'Số lượng tồn',
-      dataIndex: 'SOLUONGTON',
-      key: 'SOLUONGTON',
+      dataIndex: 'SoLuongTon',
+      key: 'SoLuongTon',
+      align:'right'
     },
     {
       title: 'Đơn giá tồn',
-      dataIndex: 'DONGIATON',
-      key: 'DONGIATON',
+      dataIndex: 'DonGiaTon',
+      key: 'DonGiaTon',
+      align:'right'
     },
     // {
     //   title: 'Tình trạng',
@@ -95,10 +232,11 @@ const TonDauKy = () =>{
       title: '',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <Button key={record.MANV} type="link" onClick= {() => console.log(record.MANV)}>Cập nhật</Button>
-          <Button key={record.MANV} type="link" danger  onClick= {() => console.log(record.MANV)}>Xóa</Button>
-        </Space>
+        <>
+          <Space size="middle">
+            {!record.Is_Deleted && <Button key={record.id} type="link" onClick= {() =>{GetTonDauKyEdit(record.Id)}}>Cập nhật</Button>}
+          </Space>
+        </>
       ),
     },
   ];
@@ -109,7 +247,7 @@ const TonDauKy = () =>{
       <Divider />
       <VStack justifyContent={"start"} alignItems="start">
         <Space align="left" style={{ marginBottom: 16 }}>
-          <Button  onClick={toogleModalFormContact}  type="primary" icon={<PlusCircleOutlined />}>
+          <Button  onClick={openCreateMode}  type="primary" icon={<PlusCircleOutlined />}>
               Thêm mới
           </Button>
           <Button  onClick={toogleModalFormContact} icon={<SearchOutlined />}>
@@ -117,34 +255,40 @@ const TonDauKy = () =>{
           </Button>
         </Space>
         <Divider />
-        <Table columns={columns} dataSource={data} />
+        {loading ? 
+            <>
+              <Spin tip="Loading..." spinning={loading}>
+                <Alert
+                  message="Đang lấy dữ liệu"
+                  description="Vui lòng chờ trong giây lát."
+                  type="info"
+                />
+              </Spin>
+            </> 
+            :
+              <Table columns={columns} dataSource={data} />}
       </VStack>
 
       {/* Modal thêm mới */}
       <Modal
         open={openModalContact}
-        title="Thêm mới tồn kho sách"
-        // onOk={submitChangeEmail}
+        title={!editMode ? "Thêm mới tồn đầu kỳ" : "Cập nhật tồn đầu kỳ"}
         onCancel={toogleModalFormContact}
         footer={null}
       >
-      <Form
-          name="basic"
+      <Form form={form} 
+          name="control-hooks"
           labelCol={{
             span: 8,
           }}
           wrapperCol={{
             span: 20,
           }}
-          initialValues={{
-            remember: true,
-          }}
-          autoComplete="off"
-          // onFinish={submitContact}
+          onFinish={!editMode? CreateTonDauKy: UpdateTonDauKy}
         >
           <Form.Item
             label="Ngày tồn: "
-            name="NGAYCT"
+            name="NgayCt"
             rules={[
               {
                 required: true,
@@ -152,12 +296,12 @@ const TonDauKy = () =>{
               },
             ]}
           >
-          <DatePicker />
+            <DatePicker format={"DD-MM-YYYY"}   />
           </Form.Item>
           
           <Form.Item
             label="Cơ sở thư viện: "
-            name="TENCOSO"
+            name="MaCoSo"
             rules={[
               {
                 required: true,
@@ -165,11 +309,21 @@ const TonDauKy = () =>{
               },
             ]}
           >
-          <Input  />
+            <Select 
+              showSearch 
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterSort={(optionA, optionB) =>
+                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+              }
+
+              >
+                {optionsCoSo}
+              </Select>
           </Form.Item>
           <Form.Item
             label="Loại hình sách: "
-            name="LOAIHINHSACH"
+            name="MaLoaiHinhSach"
             rules={[
               {
                 required: true,
@@ -177,11 +331,21 @@ const TonDauKy = () =>{
               },
             ]}
           >
-          <Input  />
+            <Select 
+              showSearch 
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterSort={(optionA, optionB) =>
+                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+              }
+
+              >
+                {optionsLoaiHinhSach}
+              </Select>
           </Form.Item>
           <Form.Item
             label="Tên sách: "
-            name="TENSACH"
+            name="MaSach"
             rules={[
               {
                 required: true,
@@ -189,11 +353,21 @@ const TonDauKy = () =>{
               },
             ]}
           >
-          <Input  />
+            <Select 
+              showSearch 
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterSort={(optionA, optionB) =>
+                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+              }
+
+              >
+                {optionsSach}
+              </Select>
           </Form.Item>
           <Form.Item
             label="Số lượng tồn: "
-            name="SOLUONGTON"
+            name="SoLuongTon"
             rules={[
               {
                 required: true,
@@ -201,11 +375,11 @@ const TonDauKy = () =>{
               },
             ]}
           >
-          <InputNumber min={0}  defaultValue={1} />
+            <InputNumber min={0}  defaultValue={0} />
           </Form.Item>
           <Form.Item
             label="Đơn giá tồn: "
-            name="DONGIATON"
+            name="DonGiaTon"
             rules={[
               {
                 required: true,
@@ -213,7 +387,7 @@ const TonDauKy = () =>{
               },
             ]}
           >
-          <InputNumber min={1000}  defaultValue={0} />
+            <InputNumber min={1000}  defaultValue={0} />
           </Form.Item>
           
           <HStack justifyContent="end">

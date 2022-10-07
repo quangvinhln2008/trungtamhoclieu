@@ -6,6 +6,7 @@ async function create(req, res) {
   try{
     const id = uuidv4()
     const NgayCt = req.body.NgayCt
+    const MaSach = req.body.MaSach
     const MaLoaiHinhSach = req.body.MaLoaiHinhSach
     const MaCoSo = req.body.MaCoSo
     const SoLuongTon = req.body.SoLuongTon
@@ -31,6 +32,7 @@ async function create(req, res) {
     .input('Id', id)
     .input('NgayCt', NgayCt)
     .input('MaCoSo', MaCoSo)
+    .input('MaSach', MaSach)
     .input('MaLoaiHinhSach', MaLoaiHinhSach)
     .input('SoLuongTon', SoLuongTon)
     .input('DonGiaTon', DonGiaTon)
@@ -53,6 +55,7 @@ async function update(req, res) {
   try{
       const {id} = req.params
       const NgayCt = req.body.NgayCt
+      const MaSach = req.body.MaSach
       const MaLoaiHinhSach = req.body.MaLoaiHinhSach
       const MaCoSo = req.body.MaCoSo
       const SoLuongTon = req.body.SoLuongTon
@@ -63,6 +66,7 @@ async function update(req, res) {
       .input('Id', id)
       .input('NgayCt', NgayCt)
       .input('MaCoSo', MaCoSo)
+      .input('MaSach', MaSach)
       .input('MaLoaiHinhSach', MaLoaiHinhSach)
       .input('SoLuongTon', SoLuongTon)
       .input('DonGiaTon', DonGiaTon)

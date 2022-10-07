@@ -173,7 +173,7 @@ const DoiTuong = () =>{
           <Space size="middle">
           {!record.Is_Deleted && <>
               <Popconfirm
-                title="Bạn có chắc xóa cơ sở không?"
+                title="Bạn có chắc xóa đối tượng không?"
                 onConfirm={()=>{DeleteDoiTuong(record.MaDoiTuong)}}
                 okText="Yes"
                 cancelText="No"

@@ -9,7 +9,8 @@ const hocKyRouter = require('./routes/hocKyRouter');
 const doiTuongRouter = require('./routes/doiTuongRouter');
 const sachRouter = require('./routes/sachRouter');
 const nhanVienRouter = require('./routes/nhanVienRouter');
-
+const tonDauKyRouter = require('./routes/tonDauKyRouter')
+ 
 const port = process.env.PORT === 'production' ? (dotenv.PORT || 80) : 3001;
 var app = express();
 app.use(express.json());
@@ -31,3 +32,4 @@ app.use('/hocky/', hocKyRouter)
 app.use('/doituong/', doiTuongRouter)
 app.use('/sach/', sachRouter)
 app.use('/nhanvien/', nhanVienRouter)
+app.use('/tondauky/', tonDauKyRouter)
