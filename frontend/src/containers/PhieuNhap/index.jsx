@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {useSearchParams} from "react-router-dom";
+import {useSearchParams, setSearchParams} from "react-router-dom";
 import axios from 'axios'
 import moment from 'moment'
 import { toast } from 'react-toastify'
@@ -29,24 +29,24 @@ const PhieuNhap = () =>{
   const [optionsCoSo, setOptionCoSo] = useState()
   const [optionsDoiTuong, setOptionDoiTuong] = useState()
   const [optionsNhanVien, setOptionNhanVien] = useState()
-  const [type, setType] = useState('')
-  const [loaiCt, setLoaiCt]= useState('1')
   const [maCt, setMaCt] = useState('')
   const [title, setTitle] = useState('')
   const [searchParams, setSearchParams] = useSearchParams();
   //   console.log('type',searchParams.get('type'))
+  
+  const type = searchParams.get('type')
 
   function getMaCt (type)
   {
     switch (type.toLowerCase()) {
       case 'nhapmua':
-        return "NM";
+        return setMaCt("NM");
       case 'nhapin':
-        return "NI";
+        return setMaCt("NI");
       case 'nhapcoso':
-         return "NCS";
+         return setMaCt("NCS");
       case 'nhapphongban':
-        return "NPB";
+        return setMaCt("NPB");
       default: 
         return ''
     }
@@ -71,11 +71,12 @@ const PhieuNhap = () =>{
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
+
   useEffect(()=>{
-    setType(searchParams.get('type'))
     getMaCt(type)
     getTitle(type)
-  },[])
+  },[type])
+  
 
   useEffect(()=>{
     loadPhieuNhap()
@@ -115,7 +116,7 @@ const PhieuNhap = () =>{
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
-
+    
     form.setFieldsValue({
         NgayCt: "",
         MaSach: "",
@@ -175,7 +176,8 @@ const PhieuNhap = () =>{
       .post('http://localhost:3001/PhieuNhap/create', {
         NgayCt: values.NgayCt,
         MaCt: maCt,
-        LoaiCt: loaiCt,
+        LoaiCt: '1',
+        SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: values.MaCoSo, 
         MaSach: values.MaSach, 
@@ -207,6 +209,7 @@ const PhieuNhap = () =>{
     return await axios
       .post(`http://localhost:3001/PhieuNhap/${dataEdit?.Id}`, {
         NgayCt: values.NgayCt.format('YYYY-MM-DD'), 
+        SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: values.MaCoSo, 
         MaSach: values.MaSach, 
@@ -257,6 +260,11 @@ const PhieuNhap = () =>{
       title: 'Ngày phiếu',
       dataIndex: 'NgayCt',
       key: 'NgayCt',
+    },
+    {
+      title: 'Diễn giải',
+      dataIndex: 'DienGiai',
+      key: 'DienGiai',
     },
     {
       title: 'Người lập',
@@ -351,7 +359,7 @@ const PhieuNhap = () =>{
       {/* Modal thêm mới */}
       <Modal
         open={openModalContact}
-        title={!editMode ? "Thêm mới phiếu" : "Cập nhật phiếu"}
+        title={!editMode ? `Thêm mới phiếu ${title}` : `Cập nhật phiếu ${title}`}
         onCancel={toogleModalFormContact}
         footer={null}
       >

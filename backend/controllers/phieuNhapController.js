@@ -9,6 +9,7 @@ async function create(req, res) {
     const NgayCt = req.body.NgayCt
     const MaCt = req.body.MaCt
     const LoaiCt = req.body.LoaiCt
+    const SoCt = req.body.SoCt
     const MaNhanVien = req.body.MaNhanVien
     const MaSach = req.body.MaSach
     const MaLoaiHinhSach = req.body.MaLoaiHinhSach
@@ -42,6 +43,7 @@ async function create(req, res) {
     .input('NgayCt', NgayCt)
     .input('MaCt', MaCt)
     .input('LoaiCt', LoaiCt)
+    .input('SoCt', SoCt)
     .input('MaNhanVien', MaNhanVien)
     .input('MaCoSo', MaCoSo)
     .input('MaSach', MaSach)
@@ -73,6 +75,7 @@ async function update(req, res) {
       const {id} = req.params
       const NgayCt = req.body.NgayCt
       const MaCt = req.body.MaCt
+      const SoCt = req.body.SoCt
       const LoaiCt = req.body.LoaiCt
       const MaNhanVien = req.body.MaNhanVien
       const MaSach = req.body.MaSach
@@ -88,6 +91,7 @@ async function update(req, res) {
       await pool.request()
       .input('Id', id)
       .input('NgayCt', NgayCt)
+      .input('SoCt', SoCt)
       .input('MaNhanVien', MaNhanVien)
       .input('MaCoSo', MaCoSo)
       .input('MaSach', MaSach)
