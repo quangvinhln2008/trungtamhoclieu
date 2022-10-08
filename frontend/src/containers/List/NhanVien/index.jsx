@@ -275,7 +275,6 @@ const NhanVien = () =>{
           autoComplete="off"
           onFinish={!editMode? CreateNhanVien: UpdateNhanVien}
         >
-          <Divider plain>Thông tin nhân viên</Divider>
           <Form.Item
             label="Mã nhân viên: "
             name="MaNhanVien"

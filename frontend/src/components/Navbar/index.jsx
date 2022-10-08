@@ -74,10 +74,10 @@ const Navbar = (props) =>{
       getItem(<Link to={'/coso'}>Cơ sở thư viện</Link>, 'coso'), 
     ]),
     getItem('Quản lý nhập', 'quanlynhap', <ContainerOutlined />, [
-      getItem(<Link to={'/phieunhapmua'}>Nhập mua</Link>, 'phieunhapmua'),
-      getItem(<Link to={'/phieunhapin'}>Nhập In-Photo</Link>, 'phieunhapin'),
-      getItem(<Link to={'/phieunhapcoso'}>Nhập cơ sở thư viện</Link>, 'phieunhapcoso'),
-      getItem(<Link to={'/phieunhapphongban'}>Nhập từ phòng ban</Link>, 'phieunhapphongban'),
+      getItem(<Link to={'/phieunhap?type=nhapmua'}>Nhập mua</Link>, 'phieunhapmua'),
+      getItem(<Link to={'/phieunhap?type=nhapin'}>Nhập In-Photo</Link>, 'phieunhapin'),
+      getItem(<Link to={'/phieunhap?type=nhapcoso'}>Nhập cơ sở thư viện</Link>, 'phieunhapcoso'),
+      getItem(<Link to={'/phieunhap?type=nhapphongban'}>Nhập từ phòng ban</Link>, 'phieunhapphongban'),
     ]),
     getItem('Quản lý xuất', 'quanlyxuat', <ContainerOutlined />, [
       getItem(<Link to={'/xuatcoso'}>Xuất cơ sở thư viện</Link>, 'xuatcoso'),

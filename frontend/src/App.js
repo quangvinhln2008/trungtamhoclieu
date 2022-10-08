@@ -28,6 +28,8 @@ import DoiTuong from './containers/List/DoiTuong';
 import Sach from './containers/List/Sach';
 import NhanVien from './containers/List/NhanVien';
 
+import PhieuNhap
+ from './containers/PhieuNhap';
 const App = (props) => {
   
   console.log('RoutesApp',RoutesApp['admin'])
@@ -45,6 +47,7 @@ const App = (props) => {
           <Route path='sach' element ={<LayoutApp component ={<Sach />} />}/>
           <Route path='nhanvien' element ={<LayoutApp component ={<NhanVien />} />}/>
           <Route path='tondauky' element ={<LayoutApp component ={<TonDauKy />} />}/>
+          <Route path='phieunhap' element ={<LayoutApp component ={<PhieuNhap />} />} />
         {/* {RoutesApp['admin'].map((item) =>(
           <Route 
             key ={item.key}
