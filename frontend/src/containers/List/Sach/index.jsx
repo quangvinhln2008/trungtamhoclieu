@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Divider, Typography, Button, Select, Modal, Space, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
+import { Divider, Typography, Button, Select, Modal, Space, Input, InputNumber, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
 const { Option } = Select;
+const { TextArea } = Input;
 
 const Sach = () =>{
   
@@ -101,7 +102,14 @@ const Sach = () =>{
 
   async function CreateSach(values){
     return await axios
-      .post('http://localhost:3001/Sach/create', {TenSach: values.TenSach, MaDoiTuong: values.MaDoiTuong, NamXuatBan: values.NamXuatBan, Barcode: values.Barcode, GiaBan: values.GiaBan})
+      .post('http://localhost:3001/Sach/create', {
+        TenSach: values.TenSach, 
+        MaDoiTuong: values.MaDoiTuong, 
+        NamXuatBan: values.NamXuatBan, 
+        Barcode: values.Barcode, 
+        GiaBan: values.GiaBan,
+        DienGiaiSach : values.DienGiaiSach
+      })
       .then((res) => {
         const result = {
           status: res.status,
@@ -122,7 +130,14 @@ const Sach = () =>{
   async function UpdateSach(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/Sach/${dataEdit?.MaSach}`, {TenSach: values.TenSach, MaDoiTuong: values.MaDoiTuong, NamXuatBan: values.NamXuatBan, Barcode: values.Barcode, GiaBan: values.GiaBan})
+      .post(`http://localhost:3001/Sach/${dataEdit?.MaSach}`, {
+        TenSach: values.TenSach, 
+        MaDoiTuong: values.MaDoiTuong, 
+        NamXuatBan: values.NamXuatBan, 
+        Barcode: values.Barcode, 
+        GiaBan: values.GiaBan,
+        DienGiaiSach: values.DienGiaiSach
+      })
       .then((res) => {
         const result = {
           status: res.status,
@@ -175,6 +190,7 @@ const Sach = () =>{
       title: 'Năm xuất bản',
       dataIndex: 'NamXuatBan',
       key: 'NamXuatBan',
+      align:'center'
     },
     {
       title: 'Giá phát hành',
@@ -307,6 +323,13 @@ const Sach = () =>{
           <Input  />
           </Form.Item>
           <Form.Item
+            label="Diễn giải: "
+            name="DienGiaiSach"
+            
+          >
+          <TextArea rows={2} />
+          </Form.Item>
+          <Form.Item
             label="Barcode: "
             name="Barcode"
             rules={[
@@ -328,7 +351,14 @@ const Sach = () =>{
               },
             ]}
           >
-          <Input  />
+          <InputNumber 
+            style={{
+              width: 150,
+            }}
+            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+            min={0}  
+            defaultValue={0} />
           </Form.Item>
 
           <HStack justifyContent="end">

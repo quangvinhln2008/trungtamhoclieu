@@ -375,7 +375,14 @@ const TonDauKy = () =>{
               },
             ]}
           >
-            <InputNumber min={0}  defaultValue={0} />
+            <InputNumber 
+            style={{
+              width: 150,
+            }}
+            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+            min={0}  
+            defaultValue={0} />
           </Form.Item>
           <Form.Item
             label="Đơn giá tồn: "
@@ -387,7 +394,14 @@ const TonDauKy = () =>{
               },
             ]}
           >
-            <InputNumber min={1000}  defaultValue={0} />
+           <InputNumber 
+            style={{
+              width: 150,
+            }}
+            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+            min={0}  
+            defaultValue={0} />
           </Form.Item>
           
           <HStack justifyContent="end">
