@@ -3,7 +3,8 @@ import {useSearchParams, setSearchParams} from "react-router-dom";
 import axios from 'axios'
 import moment from 'moment'
 import { toast } from 'react-toastify'
-import { Divider, Typography, Button, Select, Modal, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
+import { Divider,Modal, Typography, Button, Select, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin, Col, Row} from 'antd';
+// import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter  } from "@chakra-ui/react";
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
@@ -24,6 +25,7 @@ const PhieuNhap = () =>{
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
+  const [openModalChiTiet, setOpenModalChiTiet] = useState(false)
   const [optionsSach, setOptionSach] = useState()
   const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
   const [optionsCoSo, setOptionCoSo] = useState()
@@ -71,6 +73,9 @@ const PhieuNhap = () =>{
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
+  function toogleModalFormChiTiet(){
+    setOpenModalChiTiet(!openModalChiTiet)
+  }
 
   useEffect(()=>{
     getMaCt(type)
@@ -105,9 +110,6 @@ const PhieuNhap = () =>{
     })
   }, [dataEdit])
 
-  function toogleModalFormContact(){
-    setOpenModalContact(!openModalContact)
-  }
 
   function openCreateMode(){
     setEditMode(false)
@@ -327,7 +329,7 @@ const PhieuNhap = () =>{
       ),
     },
   ];
-
+  
   return(
     <>
       <Title level={3}>Phiếu {title}</Title>
@@ -359,144 +361,264 @@ const PhieuNhap = () =>{
       {/* Modal thêm mới */}
       <Modal
         open={openModalContact}
+        size="lg"
+        // size={"full"}
         title={!editMode ? `Thêm mới phiếu ${title}` : `Cập nhật phiếu ${title}`}
         onCancel={toogleModalFormContact}
         footer={null}
+        width={1500}
       >
-      <Form form={form} 
-          name="control-hooks"
-          labelCol={{
-            span: 8,
-          }}
-          wrapperCol={{
-            span: 20,
-          }}
-          onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
-        >
-          <Form.Item
-            label="Ngày tồn: "
-            name="NgayCt"
-            rules={[
-              {
-                required: true,
-                message: 'Vui lòng nhập ngày tồn kho!'
-              },
-            ]}
-          >
-            <DatePicker format={"DD-MM-YYYY"}   />
-          </Form.Item>
-          
-          <Form.Item
-            label="Cơ sở thư viện: "
-            name="MaCoSo"
-            rules={[
-              {
-                required: true,
-                message: 'Vui lòng chọn cơ sở thư viện!'
-              },
-            ]}
-          >
-            <Select 
-              showSearch 
-              optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
-              filterSort={(optionA, optionB) =>
-                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
-              }
-
+          <Form form={form} 
+              name="control-hooks"
+              labelCol={{
+                span: 8,
+              }}
+              wrapperCol={{
+                span: 20,
+              }}
+              onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
+            >
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
               >
-                {optionsCoSo}
-              </Select>
-          </Form.Item>
-          <Form.Item
-            label="Loại hình sách: "
-            name="MaLoaiHinhSach"
-            rules={[
-              {
-                required: true,
-                message: 'Vui lòng chọn loại hình sách!'
-              },
-            ]}
-          >
-            <Select 
-              showSearch 
-              optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
-              filterSort={(optionA, optionB) =>
-                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
-              }
+                <Col span={8}>
+                  <Form.Item
+                    label="Ngày phiếu: "
+                    name="NgayCt"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Vui lòng nhập ngày phiếu!'
+                      },
+                    ]}
+                  >
+                  <DatePicker format={"DD-MM-YYYY"}   />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                      label="Số phiếu: "
+                      name="SoCt"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Vui lòng nhập số phiếu!'
+                        },
+                      ]}
+                    >
+                    <Input   />
+                  </Form.Item>
+                </Col>
+                <Col  span={8}>
+                  <Form.Item
+                    label="Đối tượng: "
+                    name="MaDoiTuong"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Vui lòng chọn đối tượng!'
+                      },
+                    ]}
+                  >
+                    <Select 
+                      showSearch 
+                      optionFilterProp="children"
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterSort={(optionA, optionB) =>
+                        optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                      }
 
+                      >
+                        {optionsCoSo}
+                      </Select>
+                  </Form.Item>
+                </Col>
+                <Col className="gutter-row" span={6}>
+                </Col>
+              </Row>
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
               >
-                {optionsLoaiHinhSach}
-              </Select>
-          </Form.Item>
-          <Form.Item
-            label="Tên sách: "
-            name="MaSach"
-            rules={[
-              {
-                required: true,
-                message: 'Vui lòng chọn tên sách!'
-              },
-            ]}
-          >
-            <Select 
-              showSearch 
-              optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
-              filterSort={(optionA, optionB) =>
-                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
-              }
+                <Col className="gutter-row" span={8}>
+                  <Form.Item
+                  label="Loại hình sách: "
+                  name="MaLoaiHinhSach"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn loại hình sách!'
+                    },
+                  ]}
+                  >
+                    <Select 
+                      showSearch 
+                      optionFilterProp="children"
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterSort={(optionA, optionB) =>
+                        optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                      }
 
+                      >
+                        {optionsLoaiHinhSach}
+                      </Select>
+                  </Form.Item>
+                </Col>
+                <Col className="gutter-row" span={8}>
+                  <Form.Item
+                    label="Nhân viên: "
+                    name="MaNhanVien"                    
+                  >
+                  <Input  />
+                  </Form.Item>
+                </Col>
+                <Col className="gutter-row" span={8}>
+                  <Form.Item
+                      label="Cơ sở: "
+                      name="MaCoSo"
+                    >
+                    <Input   />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
               >
-                {optionsSach}
-              </Select>
-          </Form.Item>
-          <Form.Item
-            label="Số lượng tồn: "
-            name="SoLuongTon"
-            rules={[
-              {
-                required: true,
-                message: 'Vui lòng nhập số lượng tồn kho!'
-              },
-            ]}
-          >
-            <InputNumber 
-            style={{
-              width: 150,
-            }}
-            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-            min={0}  
-            defaultValue={0} />
-          </Form.Item>
-          <Form.Item
-            label="Đơn giá tồn: "
-            name="DonGiaTon"
-            rules={[
-              {
-                required: true,
-                message: 'Vui lòng nhập đơn giá tồn!'
-              },
-            ]}
-          >
-           <InputNumber 
-            style={{
-              width: 150,
-            }}
-            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-            min={0}  
-            defaultValue={0} />
-          </Form.Item>
-          
-          <HStack justifyContent="end">
-            <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
-            <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
-          </HStack>
-        </Form>
+                <Col className="gutter-row" span={6}>                  
+                  <Button key="save" type="primary" onClick={toogleModalFormChiTiet} >Thêm sách</Button>
+                </Col>
+              </Row>
+              
+              <Divider/>
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
+              >
+                <Col className="gutter-row" span={6}>                  
+                  <Title level={4} >Tổng số lượng: </Title>
+                </Col>
+              </Row>
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
+              >
+                <Col className="gutter-row" span={6}>                  
+                  <Title level={4} >Tổng Thành tiền: </Title>
+                </Col>
+              </Row>
+                           
+              <HStack justifyContent="end">
+                <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
+                <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
+              </HStack>
+            </Form>
       </Modal>
+      <Modal
+          open={openModalChiTiet}
+          closable ={false}
+          title={!editMode ? `Thêm chi tiết` : `Cập nhật chi tiết`}
+          onCancel={toogleModalFormContact}
+          footer={null}
+        >
+            <Form form={form} 
+                name="control-hooks"
+                labelCol={{
+                  span: 8,
+                }}
+                wrapperCol={{
+                  span: 20,
+                }}
+                onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
+              >                
+                <Form.Item
+                  label="Tên sách: "
+                  name="MaSach"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn tên sách!'
+                    },
+                  ]}
+                >
+                  <Select 
+                    showSearch 
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                    filterSort={(optionA, optionB) =>
+                      optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                    }
+
+                    >
+                      {optionsSach}
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Số lượng tồn: "
+                  name="SoLuongTon"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập số lượng tồn kho!'
+                    },
+                  ]}
+                >
+                  <InputNumber 
+                  style={{
+                    width: 150,
+                  }}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}  
+                  defaultValue={0} />
+                </Form.Item>
+                <Form.Item
+                  label="Đơn giá tồn: "
+                  name="DonGiaTon"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập đơn giá tồn!'
+                    },
+                  ]}
+                >
+                <InputNumber 
+                  style={{
+                    width: 150,
+                  }}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}  
+                  defaultValue={0} />
+                </Form.Item>
+                
+                <HStack justifyContent="end">
+                  <Button key="back" onClick={toogleModalFormChiTiet}>Thoát</Button>
+                  <Button key="save" type="primary" >Thêm</Button>
+                </HStack>
+              </Form>
+        </Modal>
     </>
   )
 }
