@@ -13,7 +13,8 @@ const { Title } = Typography;
 const { Option } = Select;
 
 const PhieuNhap = () =>{
-  
+  const _ = require("lodash");  
+
   const [form] = Form.useForm();
   const [formChiTiet] = Form.useForm();
   const [data, setData] = useState()
@@ -36,6 +37,8 @@ const PhieuNhap = () =>{
   const [optionsCoSo, setOptionCoSo] = useState()
   const [optionsDoiTuong, setOptionDoiTuong] = useState()
   const [optionsNhanVien, setOptionNhanVien] = useState()
+  const [tongSoLuongNhap,setTongSoLuongNhap] = useState(0)
+  const [tongThanhTienNhap,setTongThanhTienNhap] = useState(0)
   const [maCt, setMaCt] = useState('')
   const [title, setTitle] = useState('')
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,7 +46,9 @@ const PhieuNhap = () =>{
   
   const Ident = uuidv4()
   const type = searchParams.get('type')
+  const fieldsForm = form.getFieldsValue()
 
+  console.log('fieldsForm', fieldsForm)
   function getMaCt (type)
   {
     switch (type.toLowerCase()) {
@@ -92,6 +97,11 @@ const PhieuNhap = () =>{
   useEffect(()=>{
     loadPhieuNhap()
   },[refresh])
+
+  // useEffect(() =>{
+  //   setTongSoLuongNhap(_.sumBy(users, 'SoLuongNhap'))    
+  //   setTongThanhTienNhap(_.sumBy(users, 'ThanhTienNhap'))
+  // },[users])
 
   useEffect(()=>{
     
@@ -146,10 +156,18 @@ const PhieuNhap = () =>{
         MaSach: "",
     })
   }
+  
+
   const onDonGiaChange = (name) => {
-    const fields = form.getFieldsValue()
-    console.log('name', fields)
-    console.log('fields', name)
+    
+  const fields = form.getFieldsValue()
+  const { users } = fields
+
+    console.log('users', users)
+    Object.assign(users[name], { ThanhTienNhap: fields.users[name].SoLuongNhap * fields.users[name].DonGiaNhap })
+    form.setFieldsValue({users})
+    setTongSoLuongNhap(_.sumBy(users, 'SoLuongNhap'))    
+    setTongThanhTienNhap(_.sumBy(users, 'ThanhTienNhap'))
   }
 
 
@@ -600,11 +618,12 @@ useEffect(()=>{
                   <InputNumber 
                     placeholder="Số lượng"
                       style={{
-                        width: 150,
+                        width: 80,
                       }}
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      min={0}  />
+                      min={0}  
+                      onChange={() =>onDonGiaChange(name)}/>
                   </Form.Item>
                   <Form.Item
                     {...restField}
@@ -626,15 +645,21 @@ useEffect(()=>{
                       min={0}  
                       onChange={() =>onDonGiaChange(name)}/>
                   </Form.Item>
-                  <InputNumber 
-                    readOnly
-                    placeholder="Thành tiền"
-                      style={{
-                        width: 150,
-                      }}
-                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      min={0}  />
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'ThanhTienNhap']}                    
+                  >
+                    <InputNumber
+                      readOnly
+                      placeholder="Thành tiền"
+                        style={{
+                          width: 150
+                        }}
+                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                        min={0}  />
+                  </Form.Item>
+                  
                   <MinusCircleOutlined onClick={() => remove(name)} />
                 </Space>
                     ))}
@@ -656,22 +681,22 @@ useEffect(()=>{
                 }}
               >
                 <Col className="gutter-row" span={6}>                  
-                  <Title level={4} >Tổng số lượng: </Title>
+                  <Title level={5} >Tổng số lượng: </Title>
+                  <InputNumber size="large" readOnly formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 
+                    value = {tongSoLuongNhap}/>
                 </Col>
-              </Row>
-              <Row
-                gutter={{
-                  xs: 8,
-                  sm: 16,
-                  md: 24,
-                  lg: 32,
-                }}
-              >
                 <Col className="gutter-row" span={6}>                  
-                  <Title level={4} >Tổng Thành tiền: </Title>
+                  <Title level={5} >Tổng thành tiền: </Title>
+                  <InputNumber size="large" readOnly formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 
+                    value = {tongThanhTienNhap}
+                    style={{
+                      width: 200,
+                      textAlign:"right"
+                    }}
+                    />
                 </Col>
               </Row>
-                           
+                                        
               <HStack justifyContent="end">
                 <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
                 <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
