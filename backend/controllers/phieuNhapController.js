@@ -6,6 +6,7 @@ const moment = require("moment")
 async function create(req, res) {
   try{
     const id = uuidv4()
+    const Ident = req.body.Ident
     const NgayCt = req.body.NgayCt
     const MaCt = req.body.MaCt
     const LoaiCt = req.body.LoaiCt

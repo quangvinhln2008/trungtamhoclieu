@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify'
 import { Divider,Modal, Typography, Button, Select, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin, Col, Row} from 'antd';
 // import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter  } from "@chakra-ui/react";
-import { SearchOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
@@ -146,12 +146,6 @@ const PhieuNhap = () =>{
         MaSach: "",
     })
   }
-  const onDonGiaChange = (name) => {
-    const fields = form.getFieldsValue()
-    console.log('name', fields)
-    console.log('fields', name)
-  }
-
 
   async function loadPhieuNhap(){
     return await axios
@@ -197,38 +191,37 @@ const PhieuNhap = () =>{
   };
 
   async function CreatePhieuNhap(values){
-    // return await axios
-    //   .post('http://localhost:3001/PhieuNhap/create', {
-    //     Ident: Ident,
-    //     NgayCt: values.NgayCt,
-    //     MaCt: maCt,
-    //     LoaiCt: '1',
-    //     SoCt: values.SoCt, 
-    //     MaLoaiHinhSach: values.MaLoaiHinhSach, 
-    //     MaCoSo: values.MaCoSo, 
-    //     MaSach: values.MaSach, 
-    //     MaDoiTuong: values.MaDoiTuong,
-    //     MaNhanVien: values.MaNhanVien,
-    //     DienGiai: values.DienGiai,
-    //     HTThanhToan: values.HTThanhToan,
-    //     SoLuongNhap: values.SoLuongNhap, 
-    //     DonGiaNhap: values.DonGiaNhap})
-    //   .then((res) => {
-    //     const result = {
-    //       status: res.status,
-    //       data: res.data.result.recordset,
-    //     }
-    //     result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
-    //     setRefresh(!refresh)
-    //     setOpenModalContact(!openModalContact)
-    //     return(result)
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error.response)
-    //     toast.error(error?.response)
-    //   })
-    console.log(values)
+    return await axios
+      .post('http://localhost:3001/PhieuNhap/create', {
+        Ident: Ident,
+        NgayCt: values.NgayCt,
+        MaCt: maCt,
+        LoaiCt: '1',
+        SoCt: values.SoCt, 
+        MaLoaiHinhSach: values.MaLoaiHinhSach, 
+        MaCoSo: values.MaCoSo, 
+        MaSach: values.MaSach, 
+        MaDoiTuong: values.MaDoiTuong,
+        MaNhanVien: values.MaNhanVien,
+        DienGiai: values.DienGiai,
+        HTThanhToan: values.HTThanhToan,
+        SoLuongNhap: values.SoLuongNhap, 
+        DonGiaNhap: values.DonGiaNhap})
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
   };
 
   async function CreateChiTiet(values){
@@ -395,9 +388,6 @@ useEffect(()=>{
 
       {/* Modal thêm mới */}
       <Modal
-         style={{
-          top: 0,
-        }}
         open={openModalContact}
         size="lg"
         // size={"full"}
@@ -407,14 +397,14 @@ useEffect(()=>{
         width={1500}
       >
           <Form form={form} 
-              name="dynamic_form_nest_item" 
+              name="control-hooks"
               labelCol={{
                 span: 8,
               }}
               wrapperCol={{
                 span: 20,
               }}
-              onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
+              // onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
             >
               <Row
                 gutter={{
@@ -548,104 +538,19 @@ useEffect(()=>{
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.List name="users">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, ...restField }) => (
-                      <Space
-                        size={"large"}
-                        key={key}
-                        style={{
-                          display: 'flex',
-                          marginBottom: 8,
-                        }}
-                        align="baseline"
-                      >
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'MaSach']}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Vui lòng chọn tên sách!'
-                        },
-                      ]}
-                    >
-                    <Select 
-                       style={{
-                        width: 250,
-                      }}
-                      placeholder="Chọn sách"
-                      showSearch 
-                      optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
-                      filterSort={(optionA, optionB) =>
-                        optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
-                      }
-
-                      >
-                        {optionsSach}
-                  </Select>
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'SoLuongNhap']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Nhập số lượng',
-                      },
-                    ]}
-                  >
-                  <InputNumber 
-                    placeholder="Số lượng"
-                      style={{
-                        width: 150,
-                      }}
-                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      min={0}  />
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'DonGiaNhap']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Nhập đơn giá',
-                      },
-                    ]}
-                  >
-                  <InputNumber
-                    placeholder="Đơn giá"
-                      style={{
-                        width: 150,
-                      }}
-                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      min={0}  
-                      onChange={() =>onDonGiaChange(name)}/>
-                  </Form.Item>
-                  <InputNumber 
-                    readOnly
-                    placeholder="Thành tiền"
-                      style={{
-                        width: 150,
-                      }}
-                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      min={0}  />
-                  <MinusCircleOutlined onClick={() => remove(name)} />
-                </Space>
-                    ))}
-                  <Form.Item>
-                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                      Thêm sách
-                    </Button>
-                  </Form.Item>
-                  </>
-                  )}
-                </Form.List>
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
+              >
+                <Col className="gutter-row" span={6}>                  
+                  <Button key="save" type="primary" onClick={openCreateModeChiTiet} >Thêm sách</Button>
+                </Col>
+              </Row>
+              
               <Divider/>
               <Row
                 gutter={{
@@ -678,6 +583,90 @@ useEffect(()=>{
               </HStack>
             </Form>
       </Modal>
+      <Modal
+          open={openModalChiTiet}
+          closable ={false}
+          title={!editMode ? `Thêm chi tiết` : `Cập nhật chi tiết`}
+          onCancel={toogleModalFormContact}
+          footer={null}
+        >
+            <Form form={formChiTiet} 
+                name="control-hooks"
+                labelCol={{
+                  span: 8,
+                }}
+                wrapperCol={{
+                  span: 20,
+                }}
+                onFinish={!editModeChiTiet? CreateChiTiet: UpdatePhieuNhap}
+              >                
+                <Form.Item
+                  label="Tên sách: "
+                  name="MaSach"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn tên sách!'
+                    },
+                  ]}
+                >
+                  <Select 
+                    showSearch 
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                    filterSort={(optionA, optionB) =>
+                      optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                    }
+
+                    >
+                      {optionsSach}
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Số lượng tồn: "
+                  name="SoLuongTon"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập số lượng tồn kho!'
+                    },
+                  ]}
+                >
+                  <InputNumber 
+                  style={{
+                    width: 150,
+                  }}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}  
+                  defaultValue={0} />
+                </Form.Item>
+                <Form.Item
+                  label="Đơn giá tồn: "
+                  name="DonGiaTon"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập đơn giá tồn!'
+                    },
+                  ]}
+                >
+                <InputNumber 
+                  style={{
+                    width: 150,
+                  }}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}  
+                  defaultValue={0} />
+                </Form.Item>
+                
+                <HStack justifyContent="end">
+                  <Button key="back" onClick={toogleModalFormChiTiet}>Thoát</Button>
+                  <Button key="save" type="primary" htmlType="submit" >Thêm</Button>
+                </HStack>
+              </Form>
+        </Modal>
     </>
   )
 }
