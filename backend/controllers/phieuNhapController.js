@@ -18,12 +18,11 @@ async function create(req, res) {
     const MaDoiTuong = req.body.MaDoiTuong
     const HTThanhToan = req.body.HTThanhToan
     const DienGiai = req.body.DienGiai
-    const SoLuongNhap = req.body.SoLuongNhap
-    const DonGiaNhap = req.body.DonGiaNhap
+    const ctPhieuNhap = req.body.ctPhieuNhap
     const CreatedBy = req.body.MaNhanVien
-    const CreatedDate = moment(Date(), "YYYY-MM-DD")
+    const CreatedDate = moment().format()
     
-    // //Check authorized
+        // //Check authorized
     // var roles
     // jwt.verify(token, 'tracuu', (err, decoded) => {
     //   if (err) {
@@ -39,21 +38,33 @@ async function create(req, res) {
     // } 
 
     const pool = await poolPromise
+    const ctPhieuNhapTable = new sql.Table()
+    ctPhieuNhapTable.columns.add('MaSach', sql.VarChar(50));
+    ctPhieuNhapTable.columns.add('SoLuongNhap', sql.Money);
+    ctPhieuNhapTable.columns.add('DonGiaNhap', sql.Money);
+
+    ctPhieuNhap.forEach(detail => {
+      ctPhieuNhapTable.rows.add(
+        detail.MaSach,
+        detail.SoLuongNhap,
+        detail.DonGiaNhap
+      )
+  });
+
     await pool.request()
     .input('Id', id)
+    .input('Ident', Ident)
     .input('NgayCt', NgayCt)
     .input('MaCt', MaCt)
     .input('LoaiCt', LoaiCt)
     .input('SoCt', SoCt)
     .input('MaNhanVien', MaNhanVien)
     .input('MaCoSo', MaCoSo)
-    .input('MaSach', MaSach)
     .input('MaLoaiHinhSach', MaLoaiHinhSach)
     .input('MaDoiTuong', MaDoiTuong)
     .input('HTThanhToan', HTThanhToan)
     .input('DienGiai', DienGiai)
-    .input('SoLuongNhap', SoLuongNhap)
-    .input('DonGiaNhap', DonGiaNhap)
+    .input('ctPhieuNhap', ctPhieuNhapTable)
     .input('CreatedBy', CreatedBy)
     .input('CreatedDate', CreatedDate)
     .execute('sp_CreatePhieuNhap', (err, result)=>{

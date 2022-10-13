@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 import { Divider,Modal, Typography, Button, Select, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin, Col, Row} from 'antd';
 // import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter  } from "@chakra-ui/react";
 import { SearchOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import {VStack, HStack} from  '@chakra-ui/react';
+import {VStack, HStack, cookieStorageManager} from  '@chakra-ui/react';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -16,13 +16,10 @@ const PhieuNhap = () =>{
   const _ = require("lodash");  
 
   const [form] = Form.useForm();
-  const [formChiTiet] = Form.useForm();
   const [data, setData] = useState()
   const [dataChiTiet, setDataChiTiet] = useState()
   const [editMode, setEditMode] = useState(false)
-  const [editModeChiTiet, setEditModeChiTiet] = useState(false)
   const [dataEdit, setDataEdit] = useState()
-  const [dataEditChiTiet, setDataEditChiTiet] = useState()
   const [dataSach, setDataSach] = useState()
   const [dataCoSo, setDataCoSo] = useState()
   const [dataDoiTuong, setDataDoiTuong] = useState()
@@ -42,7 +39,6 @@ const PhieuNhap = () =>{
   const [maCt, setMaCt] = useState('')
   const [title, setTitle] = useState('')
   const [searchParams, setSearchParams] = useSearchParams();
-  //   console.log('type',searchParams.get('type'))
   
   const Ident = uuidv4()
   const type = searchParams.get('type')
@@ -84,10 +80,7 @@ const PhieuNhap = () =>{
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
-  function toogleModalFormChiTiet(){
-    setOpenModalChiTiet(!openModalChiTiet)
-  }
-
+  
   useEffect(()=>{
     getMaCt(type)
     getTitle(type)
@@ -97,11 +90,6 @@ const PhieuNhap = () =>{
   useEffect(()=>{
     loadPhieuNhap()
   },[refresh])
-
-  // useEffect(() =>{
-  //   setTongSoLuongNhap(_.sumBy(users, 'SoLuongNhap'))    
-  //   setTongThanhTienNhap(_.sumBy(users, 'ThanhTienNhap'))
-  // },[users])
 
   useEffect(()=>{
     
@@ -136,40 +124,31 @@ const PhieuNhap = () =>{
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
 
+    setTongSoLuongNhap(0)
+    setTongThanhTienNhap(0)
     form.setFieldsValue({
-        NgayCt: "",
-        MaSach: "",
+        NgayCt: moment(),
+        SoCt: "",
+        MaDoiTuong: "",
+        MaNhanVien: "",
         MaLoaiHinhSach: "",
         MaCoSo : "",
         DienGiai : "",
-        HTThanhToan:""
+        HTThanhToan:"",
+        users:[]
     })
   }
-
-  function openCreateModeChiTiet(){
-    setEditModeChiTiet(false)
-    setOpenModalChiTiet(!openModalChiTiet)
-
-    setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
-    
-    formChiTiet.setFieldsValue({        
-        MaSach: "",
-    })
-  }
-  
 
   const onDonGiaChange = (name) => {
     
-  const fields = form.getFieldsValue()
-  const { users } = fields
+    const fields = form.getFieldsValue()
+    const { users } = fields
 
-    console.log('users', users)
     Object.assign(users[name], { ThanhTienNhap: fields.users[name].SoLuongNhap * fields.users[name].DonGiaNhap })
     form.setFieldsValue({users})
-    setTongSoLuongNhap(_.sumBy(users, 'SoLuongNhap'))    
-    setTongThanhTienNhap(_.sumBy(users, 'ThanhTienNhap'))
+    setTongSoLuongNhap(_?.sumBy(users, 'SoLuongNhap'))    
+    setTongThanhTienNhap(_?.sumBy(users, 'ThanhTienNhap'))
   }
-
 
   async function loadPhieuNhap(){
     return await axios
@@ -215,38 +194,36 @@ const PhieuNhap = () =>{
   };
 
   async function CreatePhieuNhap(values){
-    // return await axios
-    //   .post('http://localhost:3001/PhieuNhap/create', {
-    //     Ident: Ident,
-    //     NgayCt: values.NgayCt,
-    //     MaCt: maCt,
-    //     LoaiCt: '1',
-    //     SoCt: values.SoCt, 
-    //     MaLoaiHinhSach: values.MaLoaiHinhSach, 
-    //     MaCoSo: values.MaCoSo, 
-    //     MaSach: values.MaSach, 
-    //     MaDoiTuong: values.MaDoiTuong,
-    //     MaNhanVien: values.MaNhanVien,
-    //     DienGiai: values.DienGiai,
-    //     HTThanhToan: values.HTThanhToan,
-    //     SoLuongNhap: values.SoLuongNhap, 
-    //     DonGiaNhap: values.DonGiaNhap})
-    //   .then((res) => {
-    //     const result = {
-    //       status: res.status,
-    //       data: res.data.result.recordset,
-    //     }
-    //     result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
-    //     setRefresh(!refresh)
-    //     setOpenModalContact(!openModalContact)
-    //     return(result)
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error.response)
-    //     toast.error(error?.response)
-    //   })
-    console.log(values)
+    return await axios
+      .post('http://localhost:3001/PhieuNhap/create', {
+        Ident: Ident,
+        NgayCt: values.NgayCt.format("YYYY-MM-DD"),
+        MaCt: maCt,
+        LoaiCt: '1',
+        SoCt: values.SoCt, 
+        MaLoaiHinhSach: values.MaLoaiHinhSach, 
+        MaCoSo: values.MaCoSo, 
+        MaSach: values.MaSach, 
+        MaDoiTuong: values.MaDoiTuong,
+        MaNhanVien: values.MaNhanVien,
+        DienGiai: values.DienGiai,
+        ctPhieuNhap: values.users  
+      })
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordset,
+        }
+        result?.data[0].status === 200 ? toast.success(result?.data[0].message): toast.error(result?.data[0].message)
+        setRefresh(!refresh)
+        setOpenModalContact(!openModalContact)
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
   };
 
   async function CreateChiTiet(values){
@@ -566,10 +543,37 @@ useEffect(()=>{
                   </Form.Item>
                 </Col>
               </Row>
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
+              >
+                <Col className="gutter-row" span={8}>
+                  <Form.Item
+                  label="Diễn giải: "
+                  name="DienGiai"
+                  
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>                
+              </Row>
               <Form.List name="users">
                 {(fields, { add, remove }) => (
                   <>
-                    {fields.map(({ key, name, ...restField }) => (
+                    {fields.map(({ key, name, ...restField }) => {
+                      const deleteRow = () =>{
+                        remove(name)
+                        const fields = form.getFieldsValue()
+                        const { users } = fields
+                        
+                        setTongSoLuongNhap(_?.sumBy(users, 'SoLuongNhap'))    
+                        setTongThanhTienNhap(_?.sumBy(users, 'ThanhTienNhap'))
+                      }
+                    return(
                       <Space
                         size={"large"}
                         key={key}
@@ -660,12 +664,12 @@ useEffect(()=>{
                         min={0}  />
                   </Form.Item>
                   
-                  <MinusCircleOutlined onClick={() => remove(name)} />
+                  <MinusCircleOutlined onClick={() => deleteRow()} />
                 </Space>
-                    ))}
+                    )})}
                   <Form.Item>
                     <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                      Thêm sách
+                      Thêm chi tiết
                     </Button>
                   </Form.Item>
                   </>
