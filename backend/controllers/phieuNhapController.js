@@ -95,24 +95,40 @@ async function update(req, res) {
       const MaCoSo = req.body.MaCoSo
       const MaDoiTuong = req.body.MaDoiTuong
       const HTThanhToan = req.body.HTThanhToan
-      const DienGiai = req.body.DienGiai
-      const SoLuongNhap = req.body.SoLuongNhap
-      const DonGiaNhap = req.body.DonGiaNhap
+      const DienGiai = req.body.DienGiai      
+      const ctPhieuNhap = req.body.ctPhieuNhap      
+    const CreatedBy = req.body.MaNhanVien
+    const CreatedDate = moment().format()
 
       const pool = await poolPromise
+      const ctPhieuNhapTable = new sql.Table()
+      ctPhieuNhapTable.columns.add('MaSach', sql.VarChar(50));
+      ctPhieuNhapTable.columns.add('SoLuongNhap', sql.Money);
+      ctPhieuNhapTable.columns.add('DonGiaNhap', sql.Money);
+
+      ctPhieuNhap.forEach(detail => {
+        ctPhieuNhapTable.rows.add(
+          detail.MaSach,
+          detail.SoLuongNhap,
+          detail.DonGiaNhap
+        )
+    });
+    
       await pool.request()
-      .input('Id', id)
+      .input('Ident', id)
       .input('NgayCt', NgayCt)
+      .input('MaCt', MaCt)
+      .input('LoaiCt', LoaiCt)
       .input('SoCt', SoCt)
       .input('MaNhanVien', MaNhanVien)
       .input('MaCoSo', MaCoSo)
-      .input('MaSach', MaSach)
       .input('MaLoaiHinhSach', MaLoaiHinhSach)
       .input('MaDoiTuong', MaDoiTuong)
       .input('HTThanhToan', HTThanhToan)
       .input('DienGiai', DienGiai)
-      .input('SoLuongNhap', SoLuongNhap)
-      .input('DonGiaNhap', DonGiaNhap)
+      .input('ctPhieuNhap', ctPhieuNhapTable)
+      .input('CreatedBy', CreatedBy)
+      .input('CreatedDate', CreatedDate)
       .execute('sp_UpdatePhieuNhap', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
@@ -131,10 +147,16 @@ async function update(req, res) {
 async function deletePhieuNhap(req, res) {
   try{
     const {id} = req.params
+     
+    const DeletedBy = req.body.MaNhanVien
+    const DeletedDate = moment().format()
+
       const pool = await poolPromise
       await pool.request()
       .input('Id', id)
-      .execute('sp_DeletePhieuNhap', (err, result)=>{
+      .input('DeletedBy', DeletedBy)
+      .input('DeletedDate', DeletedDate)
+      .execute('sp_DeletedPhieuNhap', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -148,10 +170,30 @@ async function deletePhieuNhap(req, res) {
     res.status(500).send(error.message)
   }
 }
+
+function getMaCt (type)
+  {
+    switch (type.toLowerCase()) {
+      case 'nhapmua':
+        return "NM";
+      case 'nhapin':
+        return "NI";
+      case 'nhapcoso':
+         return "NCS";
+      case 'nhapphongban':
+        return "NPB";
+      default: 
+        return ''
+    }
+  }
+
 async function getPhieuNhap(req, res) {
+   const type = req.query.type
+   const maCt = getMaCt(type)
   try{
       const pool = await poolPromise
       await pool.request()
+      .input('MaCt', maCt)
       .execute('sp_GetPhieuNhap', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });

@@ -19,7 +19,9 @@ const PhieuNhap = () =>{
   const [data, setData] = useState()
   const [dataChiTiet, setDataChiTiet] = useState()
   const [editMode, setEditMode] = useState(false)
+  const [viewMode, setViewMode] = useState(false)
   const [dataEdit, setDataEdit] = useState()
+  const [dataEditCt, setDataEditCt] = useState()
   const [dataSach, setDataSach] = useState()
   const [dataCoSo, setDataCoSo] = useState()
   const [dataDoiTuong, setDataDoiTuong] = useState()
@@ -28,7 +30,6 @@ const PhieuNhap = () =>{
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
-  const [openModalChiTiet, setOpenModalChiTiet] = useState(false)
   const [optionsSach, setOptionSach] = useState()
   const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
   const [optionsCoSo, setOptionCoSo] = useState()
@@ -44,7 +45,6 @@ const PhieuNhap = () =>{
   const type = searchParams.get('type')
   const fieldsForm = form.getFieldsValue()
 
-  console.log('fieldsForm', fieldsForm)
   function getMaCt (type)
   {
     switch (type.toLowerCase()) {
@@ -67,11 +67,11 @@ const PhieuNhap = () =>{
       case 'nhapmua':
         return setTitle("nhập mua");
       case 'nhapin':
-        return setTitle("nhập in - photo");
+        return setTitle("nhập In - Photo");
       case 'nhapcoso':
          return setTitle("nhập cơ sở");
       case 'nhapphongban':
-        return setTitle("nhập phòng/ ban");
+        return setTitle("nhập Phòng/ Khoa");
       default: 
         return ''
     }
@@ -84,6 +84,7 @@ const PhieuNhap = () =>{
   useEffect(()=>{
     getMaCt(type)
     getTitle(type)
+    loadPhieuNhap()
   },[type])
   
 
@@ -98,24 +99,27 @@ const PhieuNhap = () =>{
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    
+    setTongSoLuongNhap(_?.sumBy(dataEditCt, 'SoLuongNhap'))    
+    setTongThanhTienNhap(_?.sumBy(dataEditCt, 'ThanhTienNhap'))
 
     form.setFieldsValue({
         NgayCt: moment(dataEdit?.NgayCt, 'YYYY/MM/DD'),
+        SoCt: dataEdit?.SoCt,
         MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
         MaCoSo : dataEdit?.MaCoSo,
         MaDoiTuong: dataEdit?.MaDoiTuong,
         MaNhanVien: dataEdit?.MaNhanVien,
         HTThanhToan: dataEdit?.HTThanhToan,
         DienGiai: dataEdit?.DienGiai,
-        SoLuongNhap : dataEdit?.SoLuongNhap,
-        DonGiaNhap: dataEdit?.DonGiaNhap,
-        ThanhTienNhap: dataEdit?.ThanhTienNhap
+        users: dataEditCt
     })
   }, [dataEdit])
 
 
   function openCreateMode(){
     setEditMode(false)
+    setViewMode(true)
     setOpenModalContact(!openModalContact)
 
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
@@ -126,6 +130,7 @@ const PhieuNhap = () =>{
 
     setTongSoLuongNhap(0)
     setTongThanhTienNhap(0)
+
     form.setFieldsValue({
         NgayCt: moment(),
         SoCt: "",
@@ -152,7 +157,7 @@ const PhieuNhap = () =>{
 
   async function loadPhieuNhap(){
     return await axios
-      .get('http://localhost:3001/PhieuNhap')
+      .get(`http://localhost:3001/PhieuNhap?type=${type}`)
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -173,16 +178,19 @@ const PhieuNhap = () =>{
       })
   }
 
-  async function GetPhieuNhapEdit(MaPhieuNhap){
-    setEditMode(true)
+  async function GetPhieuNhapEdit(MaPhieuNhap, isEdit){
+    setEditMode(isEdit)
+    setViewMode(isEdit)
     return await axios
       .get(`http://localhost:3001/PhieuNhap/${MaPhieuNhap}`)
       .then((res) => {
         const result = {
           status: res.status,
-          data: res.data.result.recordset,
+          data: res.data.result.recordsets,
         }
-        setDataEdit(result.data[0])
+        
+        setDataEdit(result.data[0][0])
+        setDataEditCt(result.data[1])
         setOpenModalContact(!openModalContact)
         return(result)
       })
@@ -226,31 +234,20 @@ const PhieuNhap = () =>{
       })
   };
 
-  async function CreateChiTiet(values){
-    console.log('run', values)
-    setDataChiTiet(values)
-  };
-
-useEffect(()=>{
-
-  console.log('dataChiTiet', dataChiTiet)
-}, [dataChiTiet])
-
   async function UpdatePhieuNhap(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/PhieuNhap/${dataEdit?.Id}`, {
+      .post(`http://localhost:3001/PhieuNhap/${dataEdit?.Ident}`, {
         NgayCt: values.NgayCt.format('YYYY-MM-DD'), 
         SoCt: values.SoCt, 
+        MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: values.MaCoSo, 
-        MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: values.MaNhanVien,
         DienGiai: values.DienGiai,
         HTThanhToan: values.HTThanhToan,
-        SoLuongNhap: values.SoLuongNhap, 
-        DonGiaNhap: values.DonGiaNhap})
+        ctPhieuNhap: values.users})
       .then((res) => {
         const result = {
           status: res.status,
@@ -270,7 +267,10 @@ useEffect(()=>{
 
   async function DeletePhieuNhap(MaPhieuNhap){
     return await axios
-      .post(`http://localhost:3001/PhieuNhap/delete/${MaPhieuNhap}`)
+      .post(`http://localhost:3001/PhieuNhap/delete/${MaPhieuNhap}`,{
+      
+          // NgayCt: values.NgayCt.format('YYYY-MM-DD')
+      })
       .then((res) => {
         const result = {
           status: res.status,
@@ -340,14 +340,17 @@ useEffect(()=>{
       key: 'action',
       render: (_, record) => (
         <>
+          <Space size="middle">
+            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Ident, false)}}>Xem</Button>}
+          </Space>
          <Space size="middle">
-            {!record.Is_Deleted && <Button key={record.Id} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Id)}}>Cập nhật</Button>}
+            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Ident, true)}}>Cập nhật</Button>}
           </Space>
           <Space size="middle">
           {!record.Is_Deleted && <>
               <Popconfirm
                 title="Bạn có chắc xóa phiếu không?"
-                onConfirm={()=>{DeletePhieuNhap(record.Id)}}
+                onConfirm={()=>{DeletePhieuNhap(record.Ident)}}
                 okText="Yes"
                 cancelText="No"
               >
@@ -430,7 +433,7 @@ useEffect(()=>{
                       },
                     ]}
                   >
-                  <DatePicker format={"DD-MM-YYYY"}   />
+                  <DatePicker  format={"DD-MM-YYYY"} disabled = {!viewMode}  />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -444,7 +447,7 @@ useEffect(()=>{
                         },
                       ]}
                     >
-                    <Input   />
+                    <Input readOnly = {!viewMode}   />
                   </Form.Item>
                 </Col>
                 <Col  span={8}>
@@ -459,6 +462,7 @@ useEffect(()=>{
                     ]}
                   >
                     <Select 
+                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -494,6 +498,7 @@ useEffect(()=>{
                   ]}
                   >
                     <Select 
+                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -512,6 +517,7 @@ useEffect(()=>{
                     name="MaNhanVien"                    
                   >
                   <Select 
+                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -530,6 +536,7 @@ useEffect(()=>{
                       name="MaCoSo"
                     >
                     <Select 
+                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -546,8 +553,8 @@ useEffect(()=>{
               <Row
                 gutter={{
                   xs: 8,
-                  sm: 16,
-                  md: 24,
+                  sm: 8,
+                  md: 6,
                   lg: 32,
                 }}
               >
@@ -557,10 +564,11 @@ useEffect(()=>{
                   name="DienGiai"
                   
                   >
-                    <Input />
+                    <Input readOnly = {!viewMode} />
                   </Form.Item>
                 </Col>                
               </Row>
+              <Divider plain>Chi tiết phiếu nhập</Divider>
               <Form.List name="users">
                 {(fields, { add, remove }) => (
                   <>
@@ -594,6 +602,7 @@ useEffect(()=>{
                       ]}
                     >
                     <Select 
+                      disabled = {!viewMode} 
                        style={{
                         width: 250,
                       }}
@@ -620,6 +629,7 @@ useEffect(()=>{
                     ]}
                   >
                   <InputNumber 
+                    readOnly = {!viewMode} 
                     placeholder="Số lượng"
                       style={{
                         width: 80,
@@ -640,6 +650,7 @@ useEffect(()=>{
                     ]}
                   >
                   <InputNumber
+                    readOnly = {!viewMode} 
                     placeholder="Đơn giá"
                       style={{
                         width: 150,
@@ -664,11 +675,11 @@ useEffect(()=>{
                         min={0}  />
                   </Form.Item>
                   
-                  <MinusCircleOutlined onClick={() => deleteRow()} />
+                  {viewMode && <MinusCircleOutlined onClick={() => deleteRow()} />}
                 </Space>
                     )})}
                   <Form.Item>
-                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    <Button disabled = {!viewMode}  type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                       Thêm chi tiết
                     </Button>
                   </Form.Item>
@@ -703,7 +714,7 @@ useEffect(()=>{
                                         
               <HStack justifyContent="end">
                 <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
-                <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
+                <Button key="save" type="primary" disabled = {!viewMode}  htmlType="submit">Lưu</Button>
               </HStack>
             </Form>
       </Modal>
