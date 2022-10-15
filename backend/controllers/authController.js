@@ -6,9 +6,10 @@ const  { expressjwt }  = require('express-jwt');
 
 async function login(req, res) {
   try{
-    const userName = req.body.userName
+    const userName = req.body.id
     const password = req.body.password
     const pool = await poolPromise
+    console.log('user name', req.body)
     await pool.request()
     .input('USERNAME', sql.VarChar, userName)
     .query('SELECT * FROM DMNHANVIEN WHERE TenDangNhap = @USERNAME', (err, user)=>{
@@ -39,7 +40,8 @@ async function login(req, res) {
 
         res.status(200).send({
           id: user.recordset[0]?.MaNhanVien,
-          userName: user.recordset[0]?.TenDangNhap,
+          userName: user.recordset[0]?.TenNhanVien,
+          MaCoSo:user.recordset[0]?.MaCoSo,
           roles: user.recordset[0]?.Role.trim(),
           accessToken: token
         });

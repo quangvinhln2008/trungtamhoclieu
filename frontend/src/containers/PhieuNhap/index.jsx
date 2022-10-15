@@ -8,13 +8,16 @@ import { Divider,Modal, Typography, Button, Select, Space, DatePicker, InputNumb
 // import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter  } from "@chakra-ui/react";
 import { SearchOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {VStack, HStack, cookieStorageManager} from  '@chakra-ui/react';
+import { useCookies } from 'react-cookie';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const PhieuNhap = () =>{
   const _ = require("lodash");  
-
+  
+  const [cookies, setCookie] = useCookies(['user']);
+  
   const [form] = Form.useForm();
   const [data, setData] = useState()
   const [dataChiTiet, setDataChiTiet] = useState()
@@ -44,6 +47,13 @@ const PhieuNhap = () =>{
   const Ident = uuidv4()
   const type = searchParams.get('type')
   const fieldsForm = form.getFieldsValue()
+  
+  const getHeader = function () {
+    const rToken = cookies.rToken
+    return {
+      Authorization: 'Bearer ' + rToken,
+    }
+  }
 
   function getMaCt (type)
   {
@@ -109,7 +119,7 @@ const PhieuNhap = () =>{
         MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
         MaCoSo : dataEdit?.MaCoSo,
         MaDoiTuong: dataEdit?.MaDoiTuong,
-        MaNhanVien: dataEdit?.MaNhanVien,
+        MaNhanVien: dataEdit?.cookies.id,
         HTThanhToan: dataEdit?.HTThanhToan,
         DienGiai: dataEdit?.DienGiai,
         users: dataEditCt
@@ -156,8 +166,9 @@ const PhieuNhap = () =>{
   }
 
   async function loadPhieuNhap(){
+    const header = getHeader()
     return await axios
-      .get(`http://localhost:3001/PhieuNhap?type=${type}`)
+      .get(`http://localhost:3001/PhieuNhap?type=${type}`,{headers:header})
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -202,6 +213,7 @@ const PhieuNhap = () =>{
   };
 
   async function CreatePhieuNhap(values){
+    const header = getHeader()
     return await axios
       .post('http://localhost:3001/PhieuNhap/create', {
         Ident: Ident,
@@ -210,13 +222,13 @@ const PhieuNhap = () =>{
         LoaiCt: '1',
         SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: values.MaCoSo, 
+        MaCoSo: cookies.MaCoSo, 
         MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
-        MaNhanVien: values.MaNhanVien,
+        MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
         ctPhieuNhap: values.users  
-      })
+      },{header})
       .then((res) => {
         const result = {
           status: res.status,
@@ -242,9 +254,9 @@ const PhieuNhap = () =>{
         SoCt: values.SoCt, 
         MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: values.MaCoSo, 
+        MaCoSo: cookies.MaCoSo, 
         MaDoiTuong: values.MaDoiTuong,
-        MaNhanVien: values.MaNhanVien,
+        MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
         HTThanhToan: values.HTThanhToan,
         ctPhieuNhap: values.users})
@@ -511,7 +523,7 @@ const PhieuNhap = () =>{
                       </Select>
                   </Form.Item>
                 </Col>
-                <Col className="gutter-row" span={8}>
+                {/* <Col className="gutter-row" span={8}>
                   <Form.Item
                     label="Nhân viên: "
                     name="MaNhanVien"                    
@@ -529,8 +541,8 @@ const PhieuNhap = () =>{
                         {optionsNhanVien}
                       </Select>
                   </Form.Item>
-                </Col>
-                <Col className="gutter-row" span={8}>
+                </Col> */}
+                {/* <Col className="gutter-row" span={8}>
                   <Form.Item
                       label="Cơ sở: "
                       name="MaCoSo"
@@ -548,16 +560,7 @@ const PhieuNhap = () =>{
                         {optionsCoSo}
                       </Select>
                   </Form.Item>
-                </Col>
-              </Row>
-              <Row
-                gutter={{
-                  xs: 8,
-                  sm: 8,
-                  md: 6,
-                  lg: 32,
-                }}
-              >
+                </Col> */}
                 <Col className="gutter-row" span={8}>
                   <Form.Item
                   label="Diễn giải: "
@@ -566,7 +569,7 @@ const PhieuNhap = () =>{
                   >
                     <Input readOnly = {!viewMode} />
                   </Form.Item>
-                </Col>                
+                </Col>  
               </Row>
               <Divider plain>Chi tiết phiếu nhập</Divider>
               <Form.List name="users">

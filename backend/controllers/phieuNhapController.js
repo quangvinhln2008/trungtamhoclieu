@@ -1,7 +1,18 @@
 const {sql, poolPromise } = require('../config/db.js')
+const { jwtConfig } = require('../config/vars')
 const { v4: uuidv4 } = require('uuid');
 const jwt = require("jsonwebtoken");
 const moment = require("moment")
+
+getTokenFromHeaders = (req, res) => {
+  const { headers: { authorization } } = req;
+
+  if(authorization && authorization.split(' ')[0] === 'Bearer') {
+    return authorization.split(' ')[1];
+  }
+  return null;
+};
+
 
 async function create(req, res) {
   try{
@@ -188,12 +199,36 @@ function getMaCt (type)
   }
 
 async function getPhieuNhap(req, res) {
+  
+  var token
+  const { headers: { authorization } } = req;
+
+  if(authorization && authorization.split(' ')[0] === 'Bearer') {
+    token = authorization.split(' ')[1];
+  }else{
+    token = null
+  }
+
    const type = req.query.type
    const maCt = getMaCt(type)
+
+   //Check authorized
+    var roles
+    var manv
+
+    jwt.verify(token, jwtConfig.secret, (err, decoded) => {
+      if (err) {
+        return res.status(401).send({ message: "Unauthorized!" });
+      }
+      roles = decoded.roles
+      manv = decoded.manv
+    });
+
   try{
       const pool = await poolPromise
       await pool.request()
       .input('MaCt', maCt)
+      .input('MaNhanVien', manv)
       .execute('sp_GetPhieuNhap', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
@@ -229,7 +264,6 @@ async function getPhieuNhapById(req, res) {
     res.status(500).send(error.message)
   }
 }
-
 
 module.exports = {
   create,

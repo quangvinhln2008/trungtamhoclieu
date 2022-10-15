@@ -13,9 +13,15 @@ import {
 
 import { Layout, Breadcrumb, Menu  } from 'antd';
 import styles from './index.module.css'
+
+import { useCookies } from 'react-cookie';
+
 const { Header } = Layout;
 
 const HeaderApp = (props) => {
+  
+  const [cookies, setCookie] = useCookies(['user']);
+
   const {collapsed, onClickHandle} = props
   const [userName, setUserName] = useState('')
   const pathname = window.location.pathname;
@@ -47,7 +53,7 @@ const HeaderApp = (props) => {
     // router.push('/login')
   }
   const items = [
-    getItem(`Xin chào, ${userName}`, 'sub1',null, [
+    getItem(`Xin chào, ${cookies.TenNhanVien}`, 'sub1',null, [
       getItem(<Link href={'/profile'}><a >Trang cá nhân</a></Link>, '1', <UserOutlined />),
       getItem(<a onClick={logout}>Đăng xuất</a>, '2', <LogoutOutlined />),
     ])
