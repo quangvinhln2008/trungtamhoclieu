@@ -118,7 +118,6 @@ const PhieuNhap = () =>{
         SoCt: dataEdit?.SoCt,
         MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
         MaCoSo : dataEdit?.MaCoSo,
-        MaCoSoX : dataEdit?.MaCoSoX,
         MaDoiTuong: dataEdit?.MaDoiTuong,
         MaNhanVien: cookies.id,
         HTThanhToan: dataEdit?.HTThanhToan,
@@ -194,7 +193,7 @@ const PhieuNhap = () =>{
     setEditMode(isEdit)
     setViewMode(isEdit)
     return await axios
-      .get(`http://localhost:3001/PhieuNhap/${MaPhieuNhap}?type=${type}`)
+      .get(`http://localhost:3001/PhieuNhap/${MaPhieuNhap}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -225,7 +224,6 @@ const PhieuNhap = () =>{
         SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: cookies.MaCoSo, 
-        MaCoSoX: values.MaCoSoX, 
         MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
@@ -258,7 +256,6 @@ const PhieuNhap = () =>{
         MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: cookies.MaCoSo, 
-        MaCoSoX: values.MaCoSoX, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
@@ -320,14 +317,14 @@ const PhieuNhap = () =>{
       key: 'TenNhanVien',
     },
     {
-      title: 'Đối tượng',
-      dataIndex: 'TenDoiTuong',
-      key: 'TenDoiTuong',
-    },
-    {
       title: 'Cơ sở',
       dataIndex: 'TenCoSo',
       key: 'TenCoSo',
+    },
+    {
+      title: 'Đối tượng',
+      dataIndex: 'TenDoiTuong',
+      key: 'TenDoiTuong',
     },
     {
       title: 'Tổng số lượng',
@@ -468,8 +465,8 @@ const PhieuNhap = () =>{
                 </Col>
                 <Col  span={8}>
                   <Form.Item
-                    label={type === 'nhapcoso'? "Cơ sở xuất:" :"Đối tượng: "}
-                    name={type === 'nhapcoso'? "MaCoSoX" : "MaDoiTuong"}
+                    label={"Đối tượng: "}
+                    name={"MaDoiTuong"}
                     rules={[
                       {
                         required: true,
@@ -487,7 +484,7 @@ const PhieuNhap = () =>{
                       }
 
                       >
-                        {type === 'nhapcoso' ? optionsCoSo: optionsDoiTuong}
+                        {optionsDoiTuong}
                       </Select>
                   </Form.Item>
                 </Col>

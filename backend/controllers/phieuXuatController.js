@@ -26,7 +26,6 @@ async function create(req, res) {
     const MaSach = req.body.MaSach
     const MaLoaiHinhSach = req.body.MaLoaiHinhSach
     const MaCoSo = req.body.MaCoSo
-    const MaCoSoN = req.body.MaCoSoN
     const MaDoiTuong = req.body.MaDoiTuong
     const HTThanhToan = req.body.HTThanhToan
     const DienGiai = req.body.DienGiai
@@ -72,9 +71,8 @@ async function create(req, res) {
     .input('SoCt', SoCt)
     .input('MaNhanVien', MaNhanVien)
     .input('MaCoSo', MaCoSo)
-    .input('MaCoSoN', MaCt === 'XCS' ? MaCoSoN : '')
     .input('MaLoaiHinhSach', MaLoaiHinhSach)
-    .input('MaDoiTuong', MaCt === 'XCS' ? '' : MaDoiTuong)
+    .input('MaDoiTuong', MaDoiTuong)
     .input('HTThanhToan', HTThanhToan)
     .input('DienGiai', DienGiai)
     .input('ctPhieuXuat', ctPhieuXuatTable)
@@ -103,10 +101,8 @@ async function update(req, res) {
       const SoCt = req.body.SoCt
       const LoaiCt = req.body.LoaiCt
       const MaNhanVien = req.body.MaNhanVien
-      const MaSach = req.body.MaSach
       const MaLoaiHinhSach = req.body.MaLoaiHinhSach
       const MaCoSo = req.body.MaCoSo
-      const MaCoSoN = req.body.MaCoSoN
       const MaDoiTuong = req.body.MaDoiTuong
       const HTThanhToan = req.body.HTThanhToan
       const DienGiai = req.body.DienGiai      
@@ -119,7 +115,7 @@ async function update(req, res) {
       ctPhieuXuatTable.columns.add('MaSach', sql.VarChar(50));
       ctPhieuXuatTable.columns.add('SoLuongXuat', sql.Money);
       ctPhieuXuatTable.columns.add('DonGiaXuat', sql.Money);
-
+console.log('ngayct', NgayCt)
       ctPhieuXuat.forEach(detail => {
         ctPhieuXuatTable.rows.add(
           detail.MaSach,
@@ -136,9 +132,8 @@ async function update(req, res) {
       .input('SoCt', SoCt)
       .input('MaNhanVien', MaNhanVien)
       .input('MaCoSo', MaCoSo)
-      .input('MaCoSoN', MaCt === 'XCS' ? MaCoSoN: '')
       .input('MaLoaiHinhSach', MaLoaiHinhSach)
-      .input('MaDoiTuong', MaCt === 'XCS' ? '' : MaDoiTuong)
+      .input('MaDoiTuong', MaDoiTuong)
       .input('HTThanhToan', HTThanhToan)
       .input('DienGiai', DienGiai)
       .input('ctPhieuXuat', ctPhieuXuatTable)
@@ -243,7 +238,7 @@ async function getPhieuXuat(req, res) {
       await pool.request()
       .input('MaCt', maCt)
       .input('MaNhanVien', manv)
-      .execute(maCt === 'XCS'? 'sp_GetPhieuXuatCoSo': 'sp_GetPhieuXuat', (err, result)=>{
+      .execute('sp_GetPhieuXuat', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -261,13 +256,10 @@ async function getPhieuXuat(req, res) {
 async function getPhieuXuatById(req, res) {
   try{
     const {id} = req.params
-    const type = req.query.type
-    console.log('type',type)
-    const maCt = getMaCt(type)
       const pool = await poolPromise
       await pool.request()
       .input('Id', id)
-      .execute(maCt === 'XCS'? 'sp_GetPhieuXuaCoSotById': 'sp_GetPhieuXuatById', (err, result)=>{
+      .execute('sp_GetPhieuXuatById', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
