@@ -10,7 +10,9 @@ const doiTuongRouter = require('./routes/doiTuongRouter');
 const sachRouter = require('./routes/sachRouter');
 const nhanVienRouter = require('./routes/nhanVienRouter');
 const tonDauKyRouter = require('./routes/tonDauKyRouter')
+
 const phieuNhapRouter = require('./routes/phieuNhapRouter')
+const phieuXuatRouter = require('./routes/phieuXuatRouter')
  
 const port = process.env.PORT === 'production' ? (dotenv.PORT || 80) : 3001;
 var app = express();
@@ -35,3 +37,4 @@ app.use('/sach/', sachRouter)
 app.use('/nhanvien/', nhanVienRouter)
 app.use('/tondauky/', tonDauKyRouter)
 app.use('/phieunhap/', phieuNhapRouter)
+app.use('/phieuxuat/', phieuXuatRouter)

@@ -13,7 +13,7 @@ import { useCookies } from 'react-cookie';
 const { Title } = Typography;
 const { Option } = Select;
 
-const PhieuNhap = () =>{
+const PhieuXuat = () =>{
   const _ = require("lodash");  
   
   const [cookies, setCookie] = useCookies(['user']);
@@ -38,8 +38,8 @@ const PhieuNhap = () =>{
   const [optionsCoSo, setOptionCoSo] = useState()
   const [optionsDoiTuong, setOptionDoiTuong] = useState()
   const [optionsNhanVien, setOptionNhanVien] = useState()
-  const [tongSoLuongNhap,setTongSoLuongNhap] = useState(0)
-  const [tongThanhTienNhap,setTongThanhTienNhap] = useState(0)
+  const [tongSoLuongXuat,setTongSoLuongXuat] = useState(0)
+  const [tongThanhTienXuat,setTongThanhTienXuat] = useState(0)
   const [maCt, setMaCt] = useState('')
   const [title, setTitle] = useState('')
   const [searchParams, setSearchParams] = useSearchParams();
@@ -58,14 +58,24 @@ const PhieuNhap = () =>{
   function getMaCt (type)
   {
     switch (type.toLowerCase()) {
-      case 'nhapmua':
-        return setMaCt("NM");
-      case 'nhapin':
-        return setMaCt("NI");
-      case 'nhapcoso':
-         return setMaCt("NCS");
-      case 'nhapphongban':
-        return setMaCt("NPB");
+      case 'xuatcoso':
+        return setMaCt("XCS");
+      case 'xuatphathanh':
+        return setMaCt("XPH");
+      case 'xuatkygui':
+         return setMaCt("XKG");
+      case 'xuattang':
+        return setMaCt("XT");
+      case 'xuatthanhly':
+        return setMaCt("XTL");
+      case 'xuattrain':
+          return setMaCt("XTI");
+      case 'xuatphongban':
+        return setMaCt("XPB");
+      case 'xuatmat':
+        return setMaCt("XM");
+      case 'xuatkhac':
+        return setMaCt("XK");
       default: 
         return ''
     }
@@ -74,14 +84,24 @@ const PhieuNhap = () =>{
   function getTitle (type)
   {
     switch (type.toLowerCase()) {
-      case 'nhapmua':
-        return setTitle("nhập mua");
-      case 'nhapin':
-        return setTitle("nhập In - Photo");
-      case 'nhapcoso':
-         return setTitle("nhập cơ sở");
-      case 'nhapphongban':
-        return setTitle("nhập Phòng/ Khoa");
+      case 'xuatcoso':
+        return setTitle("xuất cơ sở");
+      case 'xuatphathanh':
+        return setTitle("xuất phát hành");
+      case 'xuatkygui':
+         return setTitle("xuất ký gửi");
+      case 'xuattang':
+        return setTitle("xuất tặng");
+      case 'xuatthanhly':
+        return setTitle("xuất thanh lý");
+      case 'xuattrain':
+          return setTitle("xuất trả nhà In-Photo");
+      case 'xuatphongban':
+        return setTitle("xuất Phòng/Khoa");
+      case 'xuatmat':
+        return setTitle("xuất mất");
+      case 'xuatkhac':
+        return setTitle("xuất khác");
       default: 
         return ''
     }
@@ -94,12 +114,12 @@ const PhieuNhap = () =>{
   useEffect(()=>{
     getMaCt(type)
     getTitle(type)
-    loadPhieuNhap()
+    loadPhieuXuat()
   },[type])
   
 
   useEffect(()=>{
-    loadPhieuNhap()
+    loadPhieuXuat()
   },[refresh])
 
   useEffect(()=>{
@@ -110,15 +130,15 @@ const PhieuNhap = () =>{
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     
-    setTongSoLuongNhap(_?.sumBy(dataEditCt, 'SoLuongNhap'))    
-    setTongThanhTienNhap(_?.sumBy(dataEditCt, 'ThanhTienNhap'))
+    setTongSoLuongXuat(_?.sumBy(dataEditCt, 'SoLuongXuat'))    
+    setTongThanhTienXuat(_?.sumBy(dataEditCt, 'ThanhTienXuat'))
 
     form.setFieldsValue({
         NgayCt: moment(dataEdit?.NgayCt, 'YYYY/MM/DD'),
         SoCt: dataEdit?.SoCt,
         MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
         MaCoSo : dataEdit?.MaCoSo,
-        MaCoSoX : dataEdit?.MaCoSoX,
+        MaCoSoN : dataEdit?.MaCoSoN,
         MaDoiTuong: dataEdit?.MaDoiTuong,
         MaNhanVien: cookies.id,
         HTThanhToan: dataEdit?.HTThanhToan,
@@ -139,8 +159,8 @@ const PhieuNhap = () =>{
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
 
-    setTongSoLuongNhap(0)
-    setTongThanhTienNhap(0)
+    setTongSoLuongXuat(0)
+    setTongThanhTienXuat(0)
 
     form.setFieldsValue({
         NgayCt: moment(),
@@ -160,16 +180,16 @@ const PhieuNhap = () =>{
     const fields = form.getFieldsValue()
     const { users } = fields
 
-    Object.assign(users[name], { ThanhTienNhap: fields.users[name].SoLuongNhap * fields.users[name].DonGiaNhap })
+    Object.assign(users[name], { ThanhTienXuat: fields.users[name].SoLuongXuat * fields.users[name].DonGiaXuat })
     form.setFieldsValue({users})
-    setTongSoLuongNhap(_?.sumBy(users, 'SoLuongNhap'))    
-    setTongThanhTienNhap(_?.sumBy(users, 'ThanhTienNhap'))
+    setTongSoLuongXuat(_?.sumBy(users, 'SoLuongXuat'))    
+    setTongThanhTienXuat(_?.sumBy(users, 'ThanhTienXuat'))
   }
 
-  async function loadPhieuNhap(){
+  async function loadPhieuXuat(){
     const header = getHeader()
     return await axios
-      .get(`http://localhost:3001/PhieuNhap?type=${type}`,{headers:header})
+      .get(`http://localhost:3001/PhieuXuat?type=${type}`,{headers:header})
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -190,11 +210,11 @@ const PhieuNhap = () =>{
       })
   }
 
-  async function GetPhieuNhapEdit(MaPhieuNhap, isEdit){
+  async function GetPhieuXuatEdit(MaPhieuXuat, isEdit){
     setEditMode(isEdit)
     setViewMode(isEdit)
     return await axios
-      .get(`http://localhost:3001/PhieuNhap/${MaPhieuNhap}?type=${type}`)
+      .get(`http://localhost:3001/PhieuXuat/${MaPhieuXuat}?type=${type}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -213,24 +233,23 @@ const PhieuNhap = () =>{
       })
   };
 
-  async function CreatePhieuNhap(values){
+  async function CreatePhieuXuat(values){
     const header = getHeader()
-    console.log('values', values)
     return await axios
-      .post('http://localhost:3001/PhieuNhap/create', {
+      .post('http://localhost:3001/PhieuXuat/create', {
         Ident: Ident,
         NgayCt: values.NgayCt.format("YYYY-MM-DD"),
         MaCt: maCt,
-        LoaiCt: '1',
+        LoaiCt: '2',
         SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: cookies.MaCoSo, 
-        MaCoSoX: values.MaCoSoX, 
+        MaCoSoN: values.MaCoSoN, 
         MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
-        ctPhieuNhap: values.users  
+        ctPhieuXuat: values.users  
       },{header})
       .then((res) => {
         const result = {
@@ -249,21 +268,21 @@ const PhieuNhap = () =>{
       })
   };
 
-  async function UpdatePhieuNhap(values){
+  async function UpdatePhieuXuat(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/PhieuNhap/${dataEdit?.Ident}`, {
+      .post(`http://localhost:3001/PhieuXuat/${dataEdit?.Ident}`, {
         NgayCt: values.NgayCt.format('YYYY-MM-DD'), 
         SoCt: values.SoCt, 
         MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: cookies.MaCoSo, 
-        MaCoSoX: values.MaCoSoX, 
+        MaCoSoN: values.MaCoSoN, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
         HTThanhToan: values.HTThanhToan,
-        ctPhieuNhap: values.users})
+        ctPhieuXuat: values.users})
       .then((res) => {
         const result = {
           status: res.status,
@@ -281,9 +300,9 @@ const PhieuNhap = () =>{
       })
   };
 
-  async function DeletePhieuNhap(MaPhieuNhap){
+  async function DeletePhieuXuat(MaPhieuXuat){
     return await axios
-      .post(`http://localhost:3001/PhieuNhap/delete/${MaPhieuNhap}`,{
+      .post(`http://localhost:3001/PhieuXuat/delete/${MaPhieuXuat}`,{
       
           // NgayCt: values.NgayCt.format('YYYY-MM-DD')
       })
@@ -357,16 +376,16 @@ const PhieuNhap = () =>{
       render: (_, record) => (
         <>
           <Space size="middle">
-            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Ident, false)}}>Xem</Button>}
+            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuXuatEdit(record.Ident, false)}}>Xem</Button>}
           </Space>
          <Space size="middle">
-            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Ident, true)}}>Cập nhật</Button>}
+            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuXuatEdit(record.Ident, true)}}>Cập nhật</Button>}
           </Space>
           <Space size="middle">
           {!record.Is_Deleted && <>
               <Popconfirm
                 title="Bạn có chắc xóa phiếu không?"
-                onConfirm={()=>{DeletePhieuNhap(record.Ident)}}
+                onConfirm={()=>{DeletePhieuXuat(record.Ident)}}
                 okText="Yes"
                 cancelText="No"
               >
@@ -428,7 +447,7 @@ const PhieuNhap = () =>{
               wrapperCol={{
                 span: 20,
               }}
-              onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
+              onFinish={!editMode? CreatePhieuXuat: UpdatePhieuXuat}
             >
               <Row
                 gutter={{
@@ -468,8 +487,8 @@ const PhieuNhap = () =>{
                 </Col>
                 <Col  span={8}>
                   <Form.Item
-                    label={type === 'nhapcoso'? "Cơ sở xuất:" :"Đối tượng: "}
-                    name={type === 'nhapcoso'? "MaCoSoX" : "MaDoiTuong"}
+                    label={type === 'xuatcoso'? 'Cơ sở nhập:' :"Đối tượng: "}
+                    name= {type === 'xuatcoso'? "MaCoSoN" : "MaDoiTuong"}
                     rules={[
                       {
                         required: true,
@@ -487,7 +506,7 @@ const PhieuNhap = () =>{
                       }
 
                       >
-                        {type === 'nhapcoso' ? optionsCoSo: optionsDoiTuong}
+                        {type === 'xuatcoso' ? optionsCoSo: optionsDoiTuong}
                       </Select>
                   </Form.Item>
                 </Col>
@@ -575,7 +594,7 @@ const PhieuNhap = () =>{
                   </Form.Item>
                 </Col>  
               </Row>
-              <Divider plain>Chi tiết phiếu nhập</Divider>
+              <Divider plain>Chi tiết phiếu xuất</Divider>
               <Form.List name="users">
                 {(fields, { add, remove }) => (
                   <>
@@ -585,8 +604,8 @@ const PhieuNhap = () =>{
                         const fields = form.getFieldsValue()
                         const { users } = fields
                         
-                        setTongSoLuongNhap(_?.sumBy(users, 'SoLuongNhap'))    
-                        setTongThanhTienNhap(_?.sumBy(users, 'ThanhTienNhap'))
+                        setTongSoLuongXuat(_?.sumBy(users, 'SoLuongXuat'))    
+                        setTongThanhTienXuat(_?.sumBy(users, 'ThanhTienXuat'))
                       }
                     return(
                       <Space
@@ -627,7 +646,7 @@ const PhieuNhap = () =>{
                   </Form.Item>
                   <Form.Item
                     {...restField}
-                    name={[name, 'SoLuongNhap']}
+                    name={[name, 'SoLuongXuat']}
                     rules={[
                       {
                         required: true,
@@ -648,7 +667,7 @@ const PhieuNhap = () =>{
                   </Form.Item>
                   <Form.Item
                     {...restField}
-                    name={[name, 'DonGiaNhap']}
+                    name={[name, 'DonGiaXuat']}
                     rules={[
                       {
                         required: true,
@@ -658,7 +677,7 @@ const PhieuNhap = () =>{
                   >
                   <InputNumber
                     readOnly = {!viewMode} 
-                    placeholder="Đơn giá"
+                    placeholder="Đơn giá"                  
                       style={{
                         width: 150,
                       }}
@@ -669,17 +688,17 @@ const PhieuNhap = () =>{
                   </Form.Item>
                   <Form.Item
                     {...restField}
-                    name={[name, 'ThanhTienNhap']}                    
+                    name={[name, 'ThanhTienXuat']}                    
                   >
                     <InputNumber
                       readOnly
+                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       placeholder="Thành tiền"
                         style={{
-                          width: 150
-                        }}
-                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                        min={0}  />
+                          width: 150,
+                          textAlign: "right"
+                        }}                        
+                        />
                   </Form.Item>
                   
                   {viewMode && <MinusCircleOutlined onClick={() => deleteRow()} />}
@@ -705,12 +724,12 @@ const PhieuNhap = () =>{
                 <Col className="gutter-row" span={6}>                  
                   <Title level={5} >Tổng số lượng: </Title>
                   <InputNumber size="large" readOnly formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 
-                    value = {tongSoLuongNhap}/>
+                    value = {tongSoLuongXuat}/>
                 </Col>
                 <Col className="gutter-row" span={6}>                  
                   <Title level={5} >Tổng thành tiền: </Title>
                   <InputNumber size="large" readOnly formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 
-                    value = {tongThanhTienNhap}
+                    value = {tongThanhTienXuat}
                     style={{
                       width: 200,
                       textAlign:"right"
@@ -729,13 +748,13 @@ const PhieuNhap = () =>{
   )
 }
 
-export default PhieuNhap;
+export default PhieuXuat;
 // import React from "react";
 // import {
 //   useSearchParams,
 // } from "react-router-dom";
 
-// const PhieuNhap = () =>{
+// const PhieuXuat = () =>{
 //   const [searchParams, setSearchParams] = useSearchParams();
 //   console.log('type',searchParams.get('type'))
 
@@ -745,4 +764,4 @@ export default PhieuNhap;
 //     </>
 //   )
 // }
-// export default PhieuNhap;
+// export default PhieuXuat;

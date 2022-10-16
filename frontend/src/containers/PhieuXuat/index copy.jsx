@@ -6,25 +6,22 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify'
 import { Divider,Modal, Typography, Button, Select, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin, Col, Row} from 'antd';
 // import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter  } from "@chakra-ui/react";
-import { SearchOutlined, MinusCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import {VStack, HStack, cookieStorageManager} from  '@chakra-ui/react';
-import { useCookies } from 'react-cookie';
+import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const PhieuNhap = () =>{
-  const _ = require("lodash");  
-  
-  const [cookies, setCookie] = useCookies(['user']);
   
   const [form] = Form.useForm();
+  const [formChiTiet] = Form.useForm();
   const [data, setData] = useState()
   const [dataChiTiet, setDataChiTiet] = useState()
   const [editMode, setEditMode] = useState(false)
-  const [viewMode, setViewMode] = useState(false)
+  const [editModeChiTiet, setEditModeChiTiet] = useState(false)
   const [dataEdit, setDataEdit] = useState()
-  const [dataEditCt, setDataEditCt] = useState()
+  const [dataEditChiTiet, setDataEditChiTiet] = useState()
   const [dataSach, setDataSach] = useState()
   const [dataCoSo, setDataCoSo] = useState()
   const [dataDoiTuong, setDataDoiTuong] = useState()
@@ -33,27 +30,19 @@ const PhieuNhap = () =>{
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
+  const [openModalChiTiet, setOpenModalChiTiet] = useState(false)
   const [optionsSach, setOptionSach] = useState()
   const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
   const [optionsCoSo, setOptionCoSo] = useState()
   const [optionsDoiTuong, setOptionDoiTuong] = useState()
   const [optionsNhanVien, setOptionNhanVien] = useState()
-  const [tongSoLuongNhap,setTongSoLuongNhap] = useState(0)
-  const [tongThanhTienNhap,setTongThanhTienNhap] = useState(0)
   const [maCt, setMaCt] = useState('')
   const [title, setTitle] = useState('')
   const [searchParams, setSearchParams] = useSearchParams();
+  //   console.log('type',searchParams.get('type'))
   
   const Ident = uuidv4()
   const type = searchParams.get('type')
-  const fieldsForm = form.getFieldsValue()
-  
-  const getHeader = function () {
-    const rToken = cookies.rToken
-    return {
-      Authorization: 'Bearer ' + rToken,
-    }
-  }
 
   function getMaCt (type)
   {
@@ -77,11 +66,11 @@ const PhieuNhap = () =>{
       case 'nhapmua':
         return setTitle("nhập mua");
       case 'nhapin':
-        return setTitle("nhập In - Photo");
+        return setTitle("nhập in - photo");
       case 'nhapcoso':
          return setTitle("nhập cơ sở");
       case 'nhapphongban':
-        return setTitle("nhập Phòng/ Khoa");
+        return setTitle("nhập phòng/ ban");
       default: 
         return ''
     }
@@ -90,11 +79,13 @@ const PhieuNhap = () =>{
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
-  
+  function toogleModalFormChiTiet(){
+    setOpenModalChiTiet(!openModalChiTiet)
+  }
+
   useEffect(()=>{
     getMaCt(type)
     getTitle(type)
-    loadPhieuNhap()
   },[type])
   
 
@@ -109,28 +100,24 @@ const PhieuNhap = () =>{
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
-    
-    setTongSoLuongNhap(_?.sumBy(dataEditCt, 'SoLuongNhap'))    
-    setTongThanhTienNhap(_?.sumBy(dataEditCt, 'ThanhTienNhap'))
 
     form.setFieldsValue({
         NgayCt: moment(dataEdit?.NgayCt, 'YYYY/MM/DD'),
-        SoCt: dataEdit?.SoCt,
         MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
         MaCoSo : dataEdit?.MaCoSo,
-        MaCoSoX : dataEdit?.MaCoSoX,
         MaDoiTuong: dataEdit?.MaDoiTuong,
-        MaNhanVien: cookies.id,
+        MaNhanVien: dataEdit?.MaNhanVien,
         HTThanhToan: dataEdit?.HTThanhToan,
         DienGiai: dataEdit?.DienGiai,
-        users: dataEditCt
+        SoLuongNhap : dataEdit?.SoLuongNhap,
+        DonGiaNhap: dataEdit?.DonGiaNhap,
+        ThanhTienNhap: dataEdit?.ThanhTienNhap
     })
   }, [dataEdit])
 
 
   function openCreateMode(){
     setEditMode(false)
-    setViewMode(true)
     setOpenModalContact(!openModalContact)
 
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
@@ -139,37 +126,30 @@ const PhieuNhap = () =>{
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
 
-    setTongSoLuongNhap(0)
-    setTongThanhTienNhap(0)
-
     form.setFieldsValue({
-        NgayCt: moment(),
-        SoCt: "",
-        MaDoiTuong: "",
-        MaNhanVien: "",
+        NgayCt: "",
+        MaSach: "",
         MaLoaiHinhSach: "",
         MaCoSo : "",
         DienGiai : "",
-        HTThanhToan:"",
-        users:[]
+        HTThanhToan:""
     })
   }
 
-  const onDonGiaChange = (name) => {
-    
-    const fields = form.getFieldsValue()
-    const { users } = fields
+  function openCreateModeChiTiet(){
+    setEditModeChiTiet(false)
+    setOpenModalChiTiet(!openModalChiTiet)
 
-    Object.assign(users[name], { ThanhTienNhap: fields.users[name].SoLuongNhap * fields.users[name].DonGiaNhap })
-    form.setFieldsValue({users})
-    setTongSoLuongNhap(_?.sumBy(users, 'SoLuongNhap'))    
-    setTongThanhTienNhap(_?.sumBy(users, 'ThanhTienNhap'))
+    setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    
+    formChiTiet.setFieldsValue({        
+        MaSach: "",
+    })
   }
 
   async function loadPhieuNhap(){
-    const header = getHeader()
     return await axios
-      .get(`http://localhost:3001/PhieuNhap?type=${type}`,{headers:header})
+      .get('http://localhost:3001/PhieuNhap')
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -190,19 +170,16 @@ const PhieuNhap = () =>{
       })
   }
 
-  async function GetPhieuNhapEdit(MaPhieuNhap, isEdit){
-    setEditMode(isEdit)
-    setViewMode(isEdit)
+  async function GetPhieuNhapEdit(MaPhieuNhap){
+    setEditMode(true)
     return await axios
-      .get(`http://localhost:3001/PhieuNhap/${MaPhieuNhap}?type=${type}`)
+      .get(`http://localhost:3001/PhieuNhap/${MaPhieuNhap}`)
       .then((res) => {
         const result = {
           status: res.status,
-          data: res.data.result.recordsets,
+          data: res.data.result.recordset,
         }
-        
-        setDataEdit(result.data[0][0])
-        setDataEditCt(result.data[1])
+        setDataEdit(result.data[0])
         setOpenModalContact(!openModalContact)
         return(result)
       })
@@ -214,24 +191,22 @@ const PhieuNhap = () =>{
   };
 
   async function CreatePhieuNhap(values){
-    const header = getHeader()
-    console.log('values', values)
     return await axios
       .post('http://localhost:3001/PhieuNhap/create', {
         Ident: Ident,
-        NgayCt: values.NgayCt.format("YYYY-MM-DD"),
+        NgayCt: values.NgayCt,
         MaCt: maCt,
         LoaiCt: '1',
         SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: cookies.MaCoSo, 
-        MaCoSoX: values.MaCoSoX, 
+        MaCoSo: values.MaCoSo, 
         MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
-        MaNhanVien: cookies.id,
+        MaNhanVien: values.MaNhanVien,
         DienGiai: values.DienGiai,
-        ctPhieuNhap: values.users  
-      },{header})
+        HTThanhToan: values.HTThanhToan,
+        SoLuongNhap: values.SoLuongNhap, 
+        DonGiaNhap: values.DonGiaNhap})
       .then((res) => {
         const result = {
           status: res.status,
@@ -249,21 +224,31 @@ const PhieuNhap = () =>{
       })
   };
 
+  async function CreateChiTiet(values){
+    console.log('run', values)
+    setDataChiTiet(values)
+  };
+
+useEffect(()=>{
+
+  console.log('dataChiTiet', dataChiTiet)
+}, [dataChiTiet])
+
   async function UpdatePhieuNhap(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/PhieuNhap/${dataEdit?.Ident}`, {
+      .post(`http://localhost:3001/PhieuNhap/${dataEdit?.Id}`, {
         NgayCt: values.NgayCt.format('YYYY-MM-DD'), 
         SoCt: values.SoCt, 
-        MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: cookies.MaCoSo, 
-        MaCoSoX: values.MaCoSoX, 
+        MaCoSo: values.MaCoSo, 
+        MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
-        MaNhanVien: cookies.id,
+        MaNhanVien: values.MaNhanVien,
         DienGiai: values.DienGiai,
         HTThanhToan: values.HTThanhToan,
-        ctPhieuNhap: values.users})
+        SoLuongNhap: values.SoLuongNhap, 
+        DonGiaNhap: values.DonGiaNhap})
       .then((res) => {
         const result = {
           status: res.status,
@@ -283,10 +268,7 @@ const PhieuNhap = () =>{
 
   async function DeletePhieuNhap(MaPhieuNhap){
     return await axios
-      .post(`http://localhost:3001/PhieuNhap/delete/${MaPhieuNhap}`,{
-      
-          // NgayCt: values.NgayCt.format('YYYY-MM-DD')
-      })
+      .post(`http://localhost:3001/PhieuNhap/delete/${MaPhieuNhap}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -356,17 +338,14 @@ const PhieuNhap = () =>{
       key: 'action',
       render: (_, record) => (
         <>
-          <Space size="middle">
-            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Ident, false)}}>Xem</Button>}
-          </Space>
          <Space size="middle">
-            {!record.Is_Deleted && <Button key={record.Ident} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Ident, true)}}>Cập nhật</Button>}
+            {!record.Is_Deleted && <Button key={record.Id} type="link" onClick= {() =>{GetPhieuNhapEdit(record.Id)}}>Cập nhật</Button>}
           </Space>
           <Space size="middle">
           {!record.Is_Deleted && <>
               <Popconfirm
                 title="Bạn có chắc xóa phiếu không?"
-                onConfirm={()=>{DeletePhieuNhap(record.Ident)}}
+                onConfirm={()=>{DeletePhieuNhap(record.Id)}}
                 okText="Yes"
                 cancelText="No"
               >
@@ -409,9 +388,6 @@ const PhieuNhap = () =>{
 
       {/* Modal thêm mới */}
       <Modal
-         style={{
-          top: 0,
-        }}
         open={openModalContact}
         size="lg"
         // size={"full"}
@@ -421,14 +397,14 @@ const PhieuNhap = () =>{
         width={1500}
       >
           <Form form={form} 
-              name="dynamic_form_nest_item" 
+              name="control-hooks"
               labelCol={{
                 span: 8,
               }}
               wrapperCol={{
                 span: 20,
               }}
-              onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
+              // onFinish={!editMode? CreatePhieuNhap: UpdatePhieuNhap}
             >
               <Row
                 gutter={{
@@ -449,7 +425,7 @@ const PhieuNhap = () =>{
                       },
                     ]}
                   >
-                  <DatePicker  format={"DD-MM-YYYY"} disabled = {!viewMode}  />
+                  <DatePicker format={"DD-MM-YYYY"}   />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -463,13 +439,13 @@ const PhieuNhap = () =>{
                         },
                       ]}
                     >
-                    <Input readOnly = {!viewMode}   />
+                    <Input   />
                   </Form.Item>
                 </Col>
                 <Col  span={8}>
                   <Form.Item
-                    label={type === 'nhapcoso'? "Cơ sở xuất:" :"Đối tượng: "}
-                    name={type === 'nhapcoso'? "MaCoSoX" : "MaDoiTuong"}
+                    label="Đối tượng: "
+                    name="MaDoiTuong"
                     rules={[
                       {
                         required: true,
@@ -478,7 +454,6 @@ const PhieuNhap = () =>{
                     ]}
                   >
                     <Select 
-                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -487,7 +462,7 @@ const PhieuNhap = () =>{
                       }
 
                       >
-                        {type === 'nhapcoso' ? optionsCoSo: optionsDoiTuong}
+                        {optionsDoiTuong}
                       </Select>
                   </Form.Item>
                 </Col>
@@ -514,7 +489,6 @@ const PhieuNhap = () =>{
                   ]}
                   >
                     <Select 
-                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -527,13 +501,12 @@ const PhieuNhap = () =>{
                       </Select>
                   </Form.Item>
                 </Col>
-                {/* <Col className="gutter-row" span={8}>
+                <Col className="gutter-row" span={8}>
                   <Form.Item
                     label="Nhân viên: "
                     name="MaNhanVien"                    
                   >
                   <Select 
-                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -545,14 +518,13 @@ const PhieuNhap = () =>{
                         {optionsNhanVien}
                       </Select>
                   </Form.Item>
-                </Col> */}
-                {/* <Col className="gutter-row" span={8}>
+                </Col>
+                <Col className="gutter-row" span={8}>
                   <Form.Item
                       label="Cơ sở: "
                       name="MaCoSo"
                     >
                     <Select 
-                      disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
                       filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
@@ -564,135 +536,21 @@ const PhieuNhap = () =>{
                         {optionsCoSo}
                       </Select>
                   </Form.Item>
-                </Col> */}
-                <Col className="gutter-row" span={8}>
-                  <Form.Item
-                  label="Diễn giải: "
-                  name="DienGiai"
-                  
-                  >
-                    <Input readOnly = {!viewMode} />
-                  </Form.Item>
-                </Col>  
+                </Col>
               </Row>
-              <Divider plain>Chi tiết phiếu nhập</Divider>
-              <Form.List name="users">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, ...restField }) => {
-                      const deleteRow = () =>{
-                        remove(name)
-                        const fields = form.getFieldsValue()
-                        const { users } = fields
-                        
-                        setTongSoLuongNhap(_?.sumBy(users, 'SoLuongNhap'))    
-                        setTongThanhTienNhap(_?.sumBy(users, 'ThanhTienNhap'))
-                      }
-                    return(
-                      <Space
-                        size={"large"}
-                        key={key}
-                        style={{
-                          display: 'flex',
-                          marginBottom: 8,
-                        }}
-                        align="baseline"
-                      >
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'MaSach']}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Vui lòng chọn tên sách!'
-                        },
-                      ]}
-                    >
-                    <Select 
-                      disabled = {!viewMode} 
-                       style={{
-                        width: 250,
-                      }}
-                      placeholder="Chọn sách"
-                      showSearch 
-                      optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
-                      filterSort={(optionA, optionB) =>
-                        optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
-                      }
-
-                      >
-                        {optionsSach}
-                  </Select>
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'SoLuongNhap']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Nhập số lượng',
-                      },
-                    ]}
-                  >
-                  <InputNumber 
-                    readOnly = {!viewMode} 
-                    placeholder="Số lượng"
-                      style={{
-                        width: 80,
-                      }}
-                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      min={0}  
-                      onChange={() =>onDonGiaChange(name)}/>
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'DonGiaNhap']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Nhập đơn giá',
-                      },
-                    ]}
-                  >
-                  <InputNumber
-                    readOnly = {!viewMode} 
-                    placeholder="Đơn giá"
-                      style={{
-                        width: 150,
-                      }}
-                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                      min={0}  
-                      onChange={() =>onDonGiaChange(name)}/>
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'ThanhTienNhap']}                    
-                  >
-                    <InputNumber
-                      readOnly
-                      placeholder="Thành tiền"
-                        style={{
-                          width: 150
-                        }}
-                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                        min={0}  />
-                  </Form.Item>
-                  
-                  {viewMode && <MinusCircleOutlined onClick={() => deleteRow()} />}
-                </Space>
-                    )})}
-                  <Form.Item>
-                    <Button disabled = {!viewMode}  type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                      Thêm chi tiết
-                    </Button>
-                  </Form.Item>
-                  </>
-                  )}
-                </Form.List>
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
+              >
+                <Col className="gutter-row" span={6}>                  
+                  <Button key="save" type="primary" onClick={openCreateModeChiTiet} >Thêm sách</Button>
+                </Col>
+              </Row>
+              
               <Divider/>
               <Row
                 gutter={{
@@ -703,28 +561,112 @@ const PhieuNhap = () =>{
                 }}
               >
                 <Col className="gutter-row" span={6}>                  
-                  <Title level={5} >Tổng số lượng: </Title>
-                  <InputNumber size="large" readOnly formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 
-                    value = {tongSoLuongNhap}/>
-                </Col>
-                <Col className="gutter-row" span={6}>                  
-                  <Title level={5} >Tổng thành tiền: </Title>
-                  <InputNumber size="large" readOnly formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 
-                    value = {tongThanhTienNhap}
-                    style={{
-                      width: 200,
-                      textAlign:"right"
-                    }}
-                    />
+                  <Title level={4} >Tổng số lượng: </Title>
                 </Col>
               </Row>
-                                        
+              <Row
+                gutter={{
+                  xs: 8,
+                  sm: 16,
+                  md: 24,
+                  lg: 32,
+                }}
+              >
+                <Col className="gutter-row" span={6}>                  
+                  <Title level={4} >Tổng Thành tiền: </Title>
+                </Col>
+              </Row>
+                           
               <HStack justifyContent="end">
                 <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
-                <Button key="save" type="primary" disabled = {!viewMode}  htmlType="submit">Lưu</Button>
+                <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
               </HStack>
             </Form>
       </Modal>
+      <Modal
+          open={openModalChiTiet}
+          closable ={false}
+          title={!editMode ? `Thêm chi tiết` : `Cập nhật chi tiết`}
+          onCancel={toogleModalFormContact}
+          footer={null}
+        >
+            <Form form={formChiTiet} 
+                name="control-hooks"
+                labelCol={{
+                  span: 8,
+                }}
+                wrapperCol={{
+                  span: 20,
+                }}
+                onFinish={!editModeChiTiet? CreateChiTiet: UpdatePhieuNhap}
+              >                
+                <Form.Item
+                  label="Tên sách: "
+                  name="MaSach"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn tên sách!'
+                    },
+                  ]}
+                >
+                  <Select 
+                    showSearch 
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                    filterSort={(optionA, optionB) =>
+                      optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                    }
+
+                    >
+                      {optionsSach}
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Số lượng tồn: "
+                  name="SoLuongTon"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập số lượng tồn kho!'
+                    },
+                  ]}
+                >
+                  <InputNumber 
+                  style={{
+                    width: 150,
+                  }}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}  
+                  defaultValue={0} />
+                </Form.Item>
+                <Form.Item
+                  label="Đơn giá tồn: "
+                  name="DonGiaTon"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập đơn giá tồn!'
+                    },
+                  ]}
+                >
+                <InputNumber 
+                  style={{
+                    width: 150,
+                  }}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}  
+                  defaultValue={0} />
+                </Form.Item>
+                
+                <HStack justifyContent="end">
+                  <Button key="back" onClick={toogleModalFormChiTiet}>Thoát</Button>
+                  <Button key="save" type="primary" htmlType="submit" >Thêm</Button>
+                </HStack>
+              </Form>
+        </Modal>
     </>
   )
 }

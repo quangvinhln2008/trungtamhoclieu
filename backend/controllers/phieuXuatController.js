@@ -26,15 +26,14 @@ async function create(req, res) {
     const MaSach = req.body.MaSach
     const MaLoaiHinhSach = req.body.MaLoaiHinhSach
     const MaCoSo = req.body.MaCoSo
-    const MaCoSoX = req.body.MaCoSoX
+    const MaCoSoN = req.body.MaCoSoN
     const MaDoiTuong = req.body.MaDoiTuong
     const HTThanhToan = req.body.HTThanhToan
     const DienGiai = req.body.DienGiai
-    const ctPhieuNhap = req.body.ctPhieuNhap
+    const ctPhieuXuat = req.body.ctPhieuXuat
     const CreatedBy = req.body.MaNhanVien
     const CreatedDate = moment().format()
-    console.log('macosoX', MaCoSoX)
-    console.log('mact', MaCt)
+    
         // //Check authorized
     // var roles
     // jwt.verify(token, 'tracuu', (err, decoded) => {
@@ -51,16 +50,16 @@ async function create(req, res) {
     // } 
 
     const pool = await poolPromise
-    const ctPhieuNhapTable = new sql.Table()
-    ctPhieuNhapTable.columns.add('MaSach', sql.VarChar(50));
-    ctPhieuNhapTable.columns.add('SoLuongNhap', sql.Money);
-    ctPhieuNhapTable.columns.add('DonGiaNhap', sql.Money);
+    const ctPhieuXuatTable = new sql.Table()
+    ctPhieuXuatTable.columns.add('MaSach', sql.VarChar(50));
+    ctPhieuXuatTable.columns.add('SoLuongXuat', sql.Money);
+    ctPhieuXuatTable.columns.add('DonGiaXuat', sql.Money);
 
-    ctPhieuNhap.forEach(detail => {
-      ctPhieuNhapTable.rows.add(
+    ctPhieuXuat.forEach(detail => {
+      ctPhieuXuatTable.rows.add(
         detail.MaSach,
-        detail.SoLuongNhap,
-        detail.DonGiaNhap
+        detail.SoLuongXuat,
+        detail.DonGiaXuat
       )
   });
 
@@ -73,15 +72,15 @@ async function create(req, res) {
     .input('SoCt', SoCt)
     .input('MaNhanVien', MaNhanVien)
     .input('MaCoSo', MaCoSo)
-    .input('MaCoSoX', MaCt === 'NCS' ? MaCoSoX : '')
+    .input('MaCoSoN', MaCt === 'XCS' ? MaCoSoN : '')
     .input('MaLoaiHinhSach', MaLoaiHinhSach)
-    .input('MaDoiTuong', MaCt === 'NCS' ? '' : MaDoiTuong)
+    .input('MaDoiTuong', MaCt === 'XCS' ? '' : MaDoiTuong)
     .input('HTThanhToan', HTThanhToan)
     .input('DienGiai', DienGiai)
-    .input('ctPhieuNhap', ctPhieuNhapTable)
+    .input('ctPhieuXuat', ctPhieuXuatTable)
     .input('CreatedBy', CreatedBy)
     .input('CreatedDate', CreatedDate)
-    .execute('sp_CreatePhieuNhap', (err, result)=>{
+    .execute('sp_CreatePhieuXuat', (err, result)=>{
       if (err) {
           res.status(500).send({ message: err });
           return;
@@ -107,25 +106,25 @@ async function update(req, res) {
       const MaSach = req.body.MaSach
       const MaLoaiHinhSach = req.body.MaLoaiHinhSach
       const MaCoSo = req.body.MaCoSo
-      const MaCoSoX = req.body.MaCoSoX
+      const MaCoSoN = req.body.MaCoSoN
       const MaDoiTuong = req.body.MaDoiTuong
       const HTThanhToan = req.body.HTThanhToan
       const DienGiai = req.body.DienGiai      
-      const ctPhieuNhap = req.body.ctPhieuNhap      
+      const ctPhieuXuat = req.body.ctPhieuXuat      
     const CreatedBy = req.body.MaNhanVien
     const CreatedDate = moment().format()
 
       const pool = await poolPromise
-      const ctPhieuNhapTable = new sql.Table()
-      ctPhieuNhapTable.columns.add('MaSach', sql.VarChar(50));
-      ctPhieuNhapTable.columns.add('SoLuongNhap', sql.Money);
-      ctPhieuNhapTable.columns.add('DonGiaNhap', sql.Money);
+      const ctPhieuXuatTable = new sql.Table()
+      ctPhieuXuatTable.columns.add('MaSach', sql.VarChar(50));
+      ctPhieuXuatTable.columns.add('SoLuongXuat', sql.Money);
+      ctPhieuXuatTable.columns.add('DonGiaXuat', sql.Money);
 
-      ctPhieuNhap.forEach(detail => {
-        ctPhieuNhapTable.rows.add(
+      ctPhieuXuat.forEach(detail => {
+        ctPhieuXuatTable.rows.add(
           detail.MaSach,
-          detail.SoLuongNhap,
-          detail.DonGiaNhap
+          detail.SoLuongXuat,
+          detail.DonGiaXuat
         )
     });
     
@@ -137,15 +136,15 @@ async function update(req, res) {
       .input('SoCt', SoCt)
       .input('MaNhanVien', MaNhanVien)
       .input('MaCoSo', MaCoSo)
-      .input('MaCoSoX', MaCt === 'NCS' ? MaCoSoX: '')
+      .input('MaCoSoN', MaCt === 'XCS' ? MaCoSoN: '')
       .input('MaLoaiHinhSach', MaLoaiHinhSach)
-      .input('MaDoiTuong', MaCt === 'NCS' ? '' : MaDoiTuong)
+      .input('MaDoiTuong', MaCt === 'XCS' ? '' : MaDoiTuong)
       .input('HTThanhToan', HTThanhToan)
       .input('DienGiai', DienGiai)
-      .input('ctPhieuNhap', ctPhieuNhapTable)
+      .input('ctPhieuXuat', ctPhieuXuatTable)
       .input('CreatedBy', CreatedBy)
       .input('CreatedDate', CreatedDate)
-      .execute('sp_UpdatePhieuNhap', (err, result)=>{
+      .execute('sp_UpdatePhieuXuat', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -160,7 +159,7 @@ async function update(req, res) {
   }
 }
 
-async function deletePhieuNhap(req, res) {
+async function deletePhieuXuat(req, res) {
   try{
     const {id} = req.params
      
@@ -172,7 +171,7 @@ async function deletePhieuNhap(req, res) {
       .input('Id', id)
       .input('DeletedBy', DeletedBy)
       .input('DeletedDate', DeletedDate)
-      .execute('sp_DeletedPhieuNhap', (err, result)=>{
+      .execute('sp_DeletedPhieuXuat', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -190,20 +189,30 @@ async function deletePhieuNhap(req, res) {
 function getMaCt (type)
   {
     switch (type.toLowerCase()) {
-      case 'nhapmua':
-        return "NM";
-      case 'nhapin':
-        return "NI";
-      case 'nhapcoso':
-         return "NCS";
-      case 'nhapphongban':
-        return "NPB";
+      case 'xuatcoso':
+        return "XCS";
+      case 'xuatphathanh':
+        return "XPH";
+      case 'xuatkygui':
+         return "XKG";
+      case 'xuattang':
+        return "XT";
+      case 'xuatthanhly':
+        return "XTL";
+      case 'xuattrain':
+          return "XTI";
+      case 'xuatphongban':
+        return "XPB";
+      case 'xuatmat':
+        return "XM";
+      case 'xuatkhac':
+        return "XK";
       default: 
         return ''
     }
   }
 
-async function getPhieuNhap(req, res) {
+async function getPhieuXuat(req, res) {
   
   var token
   const { headers: { authorization } } = req;
@@ -234,7 +243,7 @@ async function getPhieuNhap(req, res) {
       await pool.request()
       .input('MaCt', maCt)
       .input('MaNhanVien', manv)
-      .execute(maCt === 'NCS'? 'sp_GetPhieuNhapCoSo': 'sp_GetPhieuNhap', (err, result)=>{
+      .execute(maCt === 'XCS'? 'sp_GetPhieuXuatCoSo': 'sp_GetPhieuXuat', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -249,17 +258,16 @@ async function getPhieuNhap(req, res) {
   }
 }
 
-async function getPhieuNhapById(req, res) {
+async function getPhieuXuatById(req, res) {
   try{
     const {id} = req.params
     const type = req.query.type
     console.log('type',type)
     const maCt = getMaCt(type)
-
       const pool = await poolPromise
       await pool.request()
       .input('Id', id)
-      .execute(maCt === 'NCS'? 'sp_GetPhieuNhapCoSoById':'sp_GetPhieuNhapById', (err, result)=>{
+      .execute(maCt === 'XCS'? 'sp_GetPhieuXuaCoSotById': 'sp_GetPhieuXuatById', (err, result)=>{
         if (err) {
             res.status(500).send({ message: err });
             return;
@@ -277,7 +285,7 @@ async function getPhieuNhapById(req, res) {
 module.exports = {
   create,
   update,
-  deletePhieuNhap,
-  getPhieuNhapById,
-  getPhieuNhap
+  deletePhieuXuat,
+  getPhieuXuatById,
+  getPhieuXuat
 }

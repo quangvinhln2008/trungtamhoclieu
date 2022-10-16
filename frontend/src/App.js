@@ -1,6 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from '@chakra-ui/react';
-import 'antd/dist/antd.css';
+import 'antd/dist/antd.min.css';
 import './styles/globals.css'
 
 import { ToastContainer } from 'react-toastify'
@@ -28,8 +28,9 @@ import DoiTuong from './containers/List/DoiTuong';
 import Sach from './containers/List/Sach';
 import NhanVien from './containers/List/NhanVien';
 
-import PhieuNhap
- from './containers/PhieuNhap';
+import PhieuNhap from './containers/PhieuNhap';
+import PhieuXuat from './containers/PhieuXuat';
+
 const App = (props) => {
   
   console.log('RoutesApp',RoutesApp['admin'])
@@ -48,6 +49,7 @@ const App = (props) => {
           <Route path='nhanvien' element ={<LayoutApp component ={<NhanVien />} />}/>
           <Route path='tondauky' element ={<LayoutApp component ={<TonDauKy />} />}/>
           <Route path='phieunhap' element ={<LayoutApp component ={<PhieuNhap />} />} />
+          <Route path='phieuxuat' element ={<LayoutApp component ={<PhieuXuat />} />} />
         {/* {RoutesApp['admin'].map((item) =>(
           <Route 
             key ={item.key}
