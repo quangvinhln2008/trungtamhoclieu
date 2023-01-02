@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Divider, Typography, Button, Select, Modal, Space, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
+import { Divider, Typography, Button, Select,Result, Modal, Space, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
@@ -18,7 +18,10 @@ const NhanVien = () =>{
   const [openModalContact, setOpenModalContact] = useState(false)
   
   useEffect(()=>{
-    loadNhanVien()
+    setTimeout(() => {    
+      setLoading(true)
+      loadNhanVien()
+    }, 1000);
   },[refresh])
 
   useEffect(()=>{
@@ -230,29 +233,27 @@ const NhanVien = () =>{
     <>
       <Title level={3}>Nhân viên</Title>
       <Divider />
-      <VStack justifyContent={"start"} alignItems="start">
+      <>
         <Space align="left" style={{ marginBottom: 16 }}>
           <Button  onClick={openCreateMode}  type="primary" icon={<PlusCircleOutlined />}>
               Thêm mới
           </Button>
-          <Button  onClick={toogleModalFormContact} icon={<SearchOutlined />}>
+          {/* <Button  onClick={toogleModalFormContact} icon={<SearchOutlined />}>
               Tìm kiếm
-          </Button>
+          </Button> */}
         </Space>
         <Divider />
         {loading ? 
             <>
-              <Spin tip="Loading..." spinning={loading}>
-                <Alert
-                  message="Đang lấy dữ liệu"
-                  description="Vui lòng chờ trong giây lát."
-                  type="info"
+               <Spin size="large" spinning={loading}>                
+                <Result
+                  title="Đang tải dữ liệu....."                  
                 />
               </Spin>
             </> 
             :
               <Table columns={columns} dataSource={data} />}
-      </VStack>
+      </>
 
       {/* Modal thêm mới */}
       <Modal

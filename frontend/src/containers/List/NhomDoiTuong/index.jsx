@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Divider, Typography, Button, Alert, Modal, Space, Input, Table, Form, Tag, Spin, Popconfirm  } from 'antd';
+import { Divider, Typography, Button, Alert, Modal, Result, Space, Input, Table, Form, Tag, Spin, Popconfirm  } from 'antd';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
@@ -21,7 +21,10 @@ const NhomDoiTuong = () =>{
   }
 
   useEffect(()=>{
+    setTimeout(() => {    
+    setLoading(true)
     loadNhomDoiTuong()
+  }, 1000);
   },[refresh])
 
   useEffect(()=>{
@@ -187,7 +190,7 @@ const NhomDoiTuong = () =>{
     <>
       <Title level={3}>Nhóm đối tượng</Title>
       <Divider />
-      <VStack justifyContent={"start"} alignItems="start">
+      <>
       <Space align="left" style={{ marginBottom: 16 }}>
         <Button  onClick={openCreateMode} type="primary" icon={<PlusCircleOutlined />}>
             Thêm mới
@@ -196,17 +199,15 @@ const NhomDoiTuong = () =>{
         <Divider />
         {loading ? 
             <>
-              <Spin tip="Loading..." spinning={loading}>
-                <Alert
-                  message="Đang lấy dữ liệu"
-                  description="Vui lòng chờ trong giây lát."
-                  type="info"
+              <Spin size="large" spinning={loading}>                
+                <Result
+                  title="Đang tải dữ liệu....."                  
                 />
               </Spin>
             </> 
             :
               <Table columns={columns} dataSource={data} />}
-      </VStack>
+      </>
 
       {/* Modal thêm mới */}
       <Modal
