@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Divider, Typography, Button, Select, Modal, Space, Input, InputNumber, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
-import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Divider, Typography, Button, Select, Modal, Result, Space, Input, InputNumber, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
+import { SearchOutlined, PlusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
@@ -12,6 +12,7 @@ const { TextArea } = Input;
 const Sach = () =>{
   
   const [form] = Form.useForm();
+  const [formFilter] = Form.useForm();
   const [data, setData] = useState()
   const [editMode, setEditMode] = useState(false)
   const [dataEdit, setDataEdit] = useState()
@@ -19,14 +20,22 @@ const Sach = () =>{
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
+  const [openModalFilter, setOpenModalFilter] = useState(false)
   const [options, setOption] = useState()
 
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
-  
+    
+  function toogleModalFormFilter(){
+    setOpenModalFilter(!openModalFilter)
+  }
+
   useEffect(()=>{
-    loadSach()
+    setTimeout(() => {    
+      setLoading(true)
+      loadSach()
+    }, 1000);
   },[refresh])
 
   useEffect(()=>{
@@ -42,8 +51,16 @@ const Sach = () =>{
     })
   }, [dataEdit])
 
-  function toogleModalFormContact(){
-    setOpenModalContact(!openModalContact)
+  function resetData(){    
+    formFilter.setFieldsValue({
+      TenSach: "",
+      MaDoiTuong: "",
+  })
+    setLoading(true)
+    setTimeout(() => {    
+      loadSach()
+    }, 1000);
+    
   }
 
   function openCreateMode(){
@@ -59,7 +76,11 @@ const Sach = () =>{
       GiaBan : 0
     })
   }
+  function openFilterMode(){
+    setOpenModalFilter(!openModalFilter)
 
+    setOption(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));    
+  }
   async function loadSach(){
     return await axios
       .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach')
@@ -174,7 +195,35 @@ const Sach = () =>{
       })
   };
   
-
+  async function filterSach(values){
+    return await axios
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/sach/filter', {
+        TenSach: values.TenSach, 
+        MaDoiTuong: values.MaDoiTuong
+      })
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordsets,
+        }
+        setLoading(true)
+        setOpenModalFilter(!openModalFilter)
+        
+        setTimeout(() => {
+          setData(result.data[0])
+          setDataDoiTuong(result.data[1])       
+        
+          setLoading(false)
+        }, 1000);
+        
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
   const columns = [
     {
       title: 'Tên sách',
@@ -238,29 +287,30 @@ const Sach = () =>{
     <>
       <Title level={3}>Sách</Title>
       <Divider />
-      <VStack justifyContent={"start"} alignItems="start">
+      <>
         <Space align="left" style={{ marginBottom: 16 }}>
           <Button  onClick={openCreateMode}  type="primary" icon={<PlusCircleOutlined />}>
               Thêm mới
           </Button>
-          <Button  onClick={toogleModalFormContact} icon={<SearchOutlined />}>
+          <Button  onClick={openFilterMode} icon={<SearchOutlined />}>
               Tìm kiếm
+          </Button>
+          <Button onClick={resetData} type="default" icon={<ReloadOutlined />}>
+              Reload
           </Button>
         </Space>
         <Divider />
         {loading ? 
             <>
-              <Spin tip="Loading..." spinning={loading}>
-                <Alert
-                  message="Đang lấy dữ liệu"
-                  description="Vui lòng chờ trong giây lát."
-                  type="info"
+              <Spin size="large" spinning={loading}>                
+                <Result
+                  title="Đang tải dữ liệu....."                  
                 />
               </Spin>
             </> 
             :
               <Table columns={columns} dataSource={data} />}
-      </VStack>
+      </>
 
       {/* Modal thêm mới */}
       <Modal 
@@ -364,6 +414,55 @@ const Sach = () =>{
           <HStack justifyContent="end">
             <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
             <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
+          </HStack>
+        </Form>
+      </Modal>
+
+      {/* Modal tìm kiếm */}
+      <Modal 
+        open={openModalFilter}
+        title={"Tìm kiếm nâng cao"}
+        onCancel={toogleModalFormFilter}
+        footer={null}
+      >
+      <Form form={formFilter} 
+          name="control-hooks"
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 20,
+          }}
+          onFinish={filterSach}
+        >
+          <Form.Item
+            label="Tên sách: "
+            name="TenSach"           
+          >
+          <Input  />
+          </Form.Item>
+          
+          <Form.Item
+            label="Nhà xuất bản/ Nhà in: "
+            name="MaDoiTuong"
+          >
+          <Select 
+            showSearch 
+            allowClear
+            optionFilterProp="children"
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+            filterSort={(optionA, optionB) =>
+              optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+            }
+
+            >
+              {options}
+            </Select>
+          </Form.Item>          
+
+          <HStack justifyContent="end">
+            <Button key="back" onClick={toogleModalFormFilter}>Thoát</Button>
+            <Button key="save" type="primary"  htmlType="submit">Tìm</Button>
           </HStack>
         </Form>
       </Modal>

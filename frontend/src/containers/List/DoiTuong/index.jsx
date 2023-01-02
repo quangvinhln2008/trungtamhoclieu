@@ -50,6 +50,7 @@ const DoiTuong = () =>{
       MaNhomDoiTuong: ""
     })
   }
+
   function resetData(){    
     formFilter.setFieldsValue({
       MaNhomDoiTuong: ''
@@ -338,7 +339,7 @@ const DoiTuong = () =>{
           </Form.Item>
           <HStack justifyContent="end">
             <Button key="back" onClick={toogleModalFormFilter}>Thoát</Button>
-            <Button key="save" type="primary"  htmlType="Tìm">Lưu</Button>
+            <Button key="save" type="primary"  htmlType="Tìm">Tìm</Button>
           </HStack>
         </Form>
       </Modal>
