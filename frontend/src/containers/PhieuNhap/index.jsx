@@ -187,6 +187,7 @@ const PhieuNhap = () =>{
     setTongSoLuongNhap(_?.sumBy(users, 'SoLuongNhap'))    
     setTongThanhTienNhap(_?.sumBy(users, 'ThanhTienNhap'))
   }
+  
   function resetData(){    
     formFilter.setFieldsValue({
       TenSach: "",
