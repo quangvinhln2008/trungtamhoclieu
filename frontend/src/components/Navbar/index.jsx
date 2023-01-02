@@ -102,7 +102,7 @@ const Navbar = (props) =>{
     ]), 
     getItem('Cài đặt', 'caidat', <SettingOutlined />, [
       getItem(<Link to={'/profile'}>Tài khoản</Link>, 'profile'),
-      getItem(<Link to={'/logout'}>Đăng xuất</Link>, '6'), 
+      getItem(<Link to={'/login'}>Đăng xuất</Link>, '6'), 
     ]), 
   ];
 

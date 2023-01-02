@@ -44,7 +44,7 @@ const DoiTuong = () =>{
 
   async function loadDoiTuong(){
     return await axios
-      .get('http://localhost:3001/DoiTuong')
+      .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/DoiTuong')
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -64,7 +64,7 @@ const DoiTuong = () =>{
   async function GetDoiTuongEdit(MaDoiTuong){
     setEditMode(true)
     return await axios
-      .get(`http://localhost:3001/DoiTuong/${MaDoiTuong}`)
+      .get(`https://app-trungtamhoclieu.ufm.edu.vn:3005/DoiTuong/${MaDoiTuong}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -83,7 +83,7 @@ const DoiTuong = () =>{
 
   async function CreateDoiTuong(values){
     return await axios
-      .post('http://localhost:3001/DoiTuong/create', {TenDoiTuong: values.TenDoiTuong, MaNhomDoiTuong: values.MaNhomDoiTuong})
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/DoiTuong/create', {TenDoiTuong: values.TenDoiTuong, MaNhomDoiTuong: values.MaNhomDoiTuong})
       .then((res) => {
         const result = {
           status: res.status,
@@ -104,7 +104,7 @@ const DoiTuong = () =>{
   async function UpdateDoiTuong(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/DoiTuong/${dataEdit?.MaDoiTuong}`, {TenDoiTuong: values.TenDoiTuong, MaNhomDoiTuong: values.MaNhomDoiTuong})
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/DoiTuong/${dataEdit?.MaDoiTuong}`, {TenDoiTuong: values.TenDoiTuong, MaNhomDoiTuong: values.MaNhomDoiTuong})
       .then((res) => {
         const result = {
           status: res.status,
@@ -124,7 +124,7 @@ const DoiTuong = () =>{
 
   async function DeleteDoiTuong(MaDoiTuong){
     return await axios
-      .post(`http://localhost:3001/DoiTuong/delete/${MaDoiTuong}`)
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/DoiTuong/delete/${MaDoiTuong}`)
       .then((res) => {
         const result = {
           status: res.status,

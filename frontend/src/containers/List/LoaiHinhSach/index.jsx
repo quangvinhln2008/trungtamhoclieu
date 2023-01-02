@@ -46,7 +46,7 @@ const LoaiHinhSach = () =>{
 
   async function loadLoaiHinhSach(){
     return await axios
-      .get('http://localhost:3001/loaihinhsach')
+      .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/loaihinhsach')
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -65,7 +65,7 @@ const LoaiHinhSach = () =>{
   async function GetLoaiHinhSachEdit(MaLoaiHinhSach){
     setEditMode(true)
     return await axios
-      .get(`http://localhost:3001/loaihinhsach/${MaLoaiHinhSach}`)
+      .get(`https://app-trungtamhoclieu.ufm.edu.vn:3005/loaihinhsach/${MaLoaiHinhSach}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -85,7 +85,7 @@ const LoaiHinhSach = () =>{
   async function CreateLoaiHinhSach(values){
     
     return await axios
-      .post('http://localhost:3001/loaihinhsach/create', {TenLoaiHinhSach: values.TenLoaiHinhSach, DiaChiLoaiHinhSach: values.DiaChiLoaiHinhSach})
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/loaihinhsach/create', {TenLoaiHinhSach: values.TenLoaiHinhSach, DiaChiLoaiHinhSach: values.DiaChiLoaiHinhSach})
       .then((res) => {
         const result = {
           status: res.status,
@@ -106,7 +106,7 @@ const LoaiHinhSach = () =>{
   async function UpdateLoaiHinhSach(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/loaihinhsach/${dataEdit?.MaLoaiHinhSach}`, {TenLoaiHinhSach: values.TenLoaiHinhSach, DiaChiLoaiHinhSach: values.DiaChiLoaiHinhSach})
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/loaihinhsach/${dataEdit?.MaLoaiHinhSach}`, {TenLoaiHinhSach: values.TenLoaiHinhSach, DiaChiLoaiHinhSach: values.DiaChiLoaiHinhSach})
       .then((res) => {
         const result = {
           status: res.status,
@@ -126,7 +126,7 @@ const LoaiHinhSach = () =>{
 
   async function DeleteLoaiHinhSach(MaLoaiHinhSach){
     return await axios
-      .post(`http://localhost:3001/loaihinhsach/delete/${MaLoaiHinhSach}`)
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/loaihinhsach/delete/${MaLoaiHinhSach}`)
       .then((res) => {
         const result = {
           status: res.status,

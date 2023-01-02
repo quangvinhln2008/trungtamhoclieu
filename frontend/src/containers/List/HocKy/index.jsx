@@ -47,7 +47,7 @@ useEffect(()=>{
 
   async function loadHocKy(){
     return await axios
-      .get('http://localhost:3001/hocky')
+      .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/hocky')
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -67,7 +67,7 @@ useEffect(()=>{
     
     setEditMode(true)
     return await axios
-      .get(`http://localhost:3001/hocky/${MaHocKy}`)
+      .get(`https://app-trungtamhoclieu.ufm.edu.vn:3005/hocky/${MaHocKy}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -88,7 +88,7 @@ useEffect(()=>{
   async function CreateHocKy(values){
     console.log('values', values)
     return await axios
-      .post('http://localhost:3001/hocky/create', {TenHocKy: values.TenHocKy, TuNgay: values.TuNgay, DenNgay: values.DenNgay})
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/hocky/create', {TenHocKy: values.TenHocKy, TuNgay: values.TuNgay, DenNgay: values.DenNgay})
       .then((res) => {
         const result = {
           status: res.status,
@@ -109,7 +109,7 @@ useEffect(()=>{
   async function UpdateHocKy(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/hocky/${dataEdit?.MaHocKy}`, {TenHocKy: values.TenHocKy, TuNgay: values.TuNgay.format('YYYY-MM-DD'), DenNgay: values.DenNgay.format('YYYY-MM-DD')})
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/hocky/${dataEdit?.MaHocKy}`, {TenHocKy: values.TenHocKy, TuNgay: values.TuNgay.format('YYYY-MM-DD'), DenNgay: values.DenNgay.format('YYYY-MM-DD')})
       .then((res) => {
         const result = {
           status: res.status,
@@ -129,7 +129,7 @@ useEffect(()=>{
 
   async function DeleteHocKy(MaHocKy){
     return await axios
-      .post(`http://localhost:3001/hocky/delete/${MaHocKy}`)
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/hocky/delete/${MaHocKy}`)
       .then((res) => {
         const result = {
           status: res.status,

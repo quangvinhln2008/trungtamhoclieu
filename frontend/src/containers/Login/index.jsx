@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import style from './index.module.css';
 import axios from "axios";
 import { toast } from 'react-toastify'
@@ -13,17 +13,24 @@ import { useCookies } from 'react-cookie';
 const FormItem = Form.Item;
 
 const Login = () =>{
-  const [cookies, setCookie] = useCookies(['user']);
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
 
   const expires = new Date();
   expires.setDate(expires.getDate() + 1);
   console.log('cookie', cookies.TenNhanVien)
 
-  const navigate = useNavigate()
+  const navigate = useNavigate() 
+  useEffect(()=>{
+    removeCookie('id', { path: '/' })
+    removeCookie('TenNhanVien', { path: '/' })
+    removeCookie('rToken', { path: '/' })
+    removeCookie('MaCoSo', { path: '/' })
+  }
+  ,[])
 
   async function submitLogin(data){
       return await axios
-      .post('http://localhost:3001/user/login', {id: data.id, password: data.password})
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/user/login', {id: data.id, password: data.password})
       .then((res) => {
         console.log('res', res)
         setCookie('id', res.data.id, {expires})

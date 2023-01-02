@@ -62,7 +62,7 @@ const Sach = () =>{
 
   async function loadSach(){
     return await axios
-      .get('http://localhost:3001/Sach')
+      .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach')
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -83,7 +83,7 @@ const Sach = () =>{
   async function GetSachEdit(MaSach){
     setEditMode(true)
     return await axios
-      .get(`http://localhost:3001/Sach/${MaSach}`)
+      .get(`https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach/${MaSach}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -102,7 +102,7 @@ const Sach = () =>{
 
   async function CreateSach(values){
     return await axios
-      .post('http://localhost:3001/Sach/create', {
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach/create', {
         TenSach: values.TenSach, 
         MaDoiTuong: values.MaDoiTuong, 
         NamXuatBan: values.NamXuatBan, 
@@ -130,7 +130,7 @@ const Sach = () =>{
   async function UpdateSach(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/Sach/${dataEdit?.MaSach}`, {
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach/${dataEdit?.MaSach}`, {
         TenSach: values.TenSach, 
         MaDoiTuong: values.MaDoiTuong, 
         NamXuatBan: values.NamXuatBan, 
@@ -157,7 +157,7 @@ const Sach = () =>{
 
   async function DeleteSach(MaSach){
     return await axios
-      .post(`http://localhost:3001/Sach/delete/${MaSach}`)
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach/delete/${MaSach}`)
       .then((res) => {
         const result = {
           status: res.status,

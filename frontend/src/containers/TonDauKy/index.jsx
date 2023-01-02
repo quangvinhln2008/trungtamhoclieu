@@ -73,7 +73,7 @@ const TonDauKy = () =>{
 
   async function loadTonDauKy(){
     return await axios
-      .get('http://localhost:3001/TonDauKy')
+      .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/TonDauKy')
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -96,7 +96,7 @@ const TonDauKy = () =>{
     console.log('id', MaTonDauKy)
     setEditMode(true)
     return await axios
-      .get(`http://localhost:3001/TonDauKy/${MaTonDauKy}`)
+      .get(`https://app-trungtamhoclieu.ufm.edu.vn:3005/TonDauKy/${MaTonDauKy}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -115,7 +115,7 @@ const TonDauKy = () =>{
 
   async function CreateTonDauKy(values){
     return await axios
-      .post('http://localhost:3001/TonDauKy/create', {
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/TonDauKy/create', {
         NgayCt: values.NgayCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: values.MaCoSo, 
@@ -142,7 +142,7 @@ const TonDauKy = () =>{
   async function UpdateTonDauKy(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/TonDauKy/${dataEdit?.Id}`, {
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/TonDauKy/${dataEdit?.Id}`, {
         NgayCt: values.NgayCt.format('YYYY-MM-DD'), 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: values.MaCoSo, 
@@ -168,7 +168,7 @@ const TonDauKy = () =>{
 
   async function DeleteTonDauKy(MaTonDauKy){
     return await axios
-      .post(`http://localhost:3001/TonDauKy/delete/${MaTonDauKy}`)
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/TonDauKy/delete/${MaTonDauKy}`)
       .then((res) => {
         const result = {
           status: res.status,

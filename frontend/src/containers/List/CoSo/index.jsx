@@ -43,7 +43,7 @@ const CoSo = () =>{
 
   async function loadCoSo(){
     return await axios
-      .get('http://localhost:3001/coso')
+      .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/coso')
       .then((res) => {
         const result = {
           status: res.data.status,
@@ -62,7 +62,7 @@ const CoSo = () =>{
   async function GetCoSoEdit(MaCoSo){
     setEditMode(true)
     return await axios
-      .get(`http://localhost:3001/coso/${MaCoSo}`)
+      .get(`https://app-trungtamhoclieu.ufm.edu.vn:3005/coso/${MaCoSo}`)
       .then((res) => {
         const result = {
           status: res.status,
@@ -82,7 +82,7 @@ const CoSo = () =>{
   async function CreateCoSo(values){
     
     return await axios
-      .post('http://localhost:3001/coso/create', {TenCoSo: values.TenCoSo, DiaChiCoSo: values.DiaChiCoSo})
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/coso/create', {TenCoSo: values.TenCoSo, DiaChiCoSo: values.DiaChiCoSo})
       .then((res) => {
         const result = {
           status: res.status,
@@ -103,7 +103,7 @@ const CoSo = () =>{
   async function UpdateCoSo(values){
     console.log('run update')
     return await axios
-      .post(`http://localhost:3001/coso/${dataEdit?.MaCoSo}`, {TenCoSo: values.TenCoSo, DiaChiCoSo: values.DiaChiCoSo})
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/coso/${dataEdit?.MaCoSo}`, {TenCoSo: values.TenCoSo, DiaChiCoSo: values.DiaChiCoSo})
       .then((res) => {
         const result = {
           status: res.status,
@@ -123,7 +123,7 @@ const CoSo = () =>{
 
   async function DeleteCoSo(MaCoSo){
     return await axios
-      .post(`http://localhost:3001/coso/delete/${MaCoSo}`)
+      .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/coso/delete/${MaCoSo}`)
       .then((res) => {
         const result = {
           status: res.status,
