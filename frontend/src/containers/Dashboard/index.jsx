@@ -32,11 +32,11 @@ const Dashboard = () =>{
     return (
       <div>        
         {isLoading && <>
-          <Spin  size="large"/>
-          <Result
-            status="success"
-            title= {title}            
-          />
+          <Spin size="large">
+            <Result
+              title= {title}            
+            />
+          </Spin>
         </>}
         {!isLoading && <Result
           status="403"

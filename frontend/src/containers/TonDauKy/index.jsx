@@ -2,8 +2,8 @@ import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import moment from 'moment'
 import { toast } from 'react-toastify'
-import { Divider, Typography, Button, Select, Modal, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
-import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Divider, Typography, Button, Select, Modal,Result, Space, DatePicker, InputNumber, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
+import { SearchOutlined, PlusCircleOutlined,ReloadOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
@@ -12,6 +12,7 @@ const { Option } = Select;
 const TonDauKy = () =>{
   
   const [form] = Form.useForm();
+  const [formFilter] = Form.useForm();
   const [data, setData] = useState()
   const [editMode, setEditMode] = useState(false)
   const [dataEdit, setDataEdit] = useState()
@@ -21,6 +22,7 @@ const TonDauKy = () =>{
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
+  const [openModalFilter, setOpenModalFilter] = useState(false)
   const [optionsSach, setOptionSach] = useState()
   const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
   const [optionsCoSo, setOptionCoSo] = useState()
@@ -30,7 +32,10 @@ const TonDauKy = () =>{
   }
 
   useEffect(()=>{
-    loadTonDauKy()
+    setTimeout(() => {    
+      setLoading(true)
+      loadTonDauKy()
+    }, 1000);
   },[refresh])
 
   useEffect(()=>{
@@ -52,6 +57,10 @@ const TonDauKy = () =>{
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
+  
+  function toogleModalFormFilter(){
+    setOpenModalFilter(!openModalFilter)
+  }
 
   function openCreateMode(){
     setEditMode(false)
@@ -71,6 +80,26 @@ const TonDauKy = () =>{
     })
   }
 
+  function openFilterMode(){
+    setOpenModalFilter(!openModalFilter)
+
+    setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    
+  }
+  function resetData(){    
+    formFilter.setFieldsValue({
+      MaSach: '',
+      MaLoaiHinhSach: '',
+      MaCoSo : ''
+  })
+    setLoading(true)
+    setTimeout(() => {    
+      loadTonDauKy()
+    }, 1000);
+    
+  }
   async function loadTonDauKy(){
     return await axios
       .get('https://app-trungtamhoclieu.ufm.edu.vn:3005/TonDauKy')
@@ -184,7 +213,37 @@ const TonDauKy = () =>{
         toast.error(error?.response)
       })
   };
-  
+
+  async function filterTonDauKy(values){
+    return await axios
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/TonDauKy/filter', {
+        MaLoaiHinhSach: values.MaLoaiHinhSach, 
+        MaCoSo: values.MaCoSo, 
+        MaSach: values.MaSach
+      })
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordsets,
+        }
+        setLoading(true)
+        setOpenModalFilter(!openFilterMode)
+        setTimeout(() => {
+          setData(result.data[0])
+          setDataCoSo(result.data[1])
+          setDataLoaiHinhSach(result.data[2])
+          setDataSach(result.data[3])
+          setLoading(false)
+        }, 1000);
+        
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
   const columns = [
     {
       title: 'Ngày tồn',
@@ -245,29 +304,30 @@ const TonDauKy = () =>{
     <>
       <Title level={3}>Tồn kho sách đầu kỳ</Title>
       <Divider />
-      <VStack justifyContent={"start"} alignItems="start">
+      <>
         <Space align="left" style={{ marginBottom: 16 }}>
           <Button  onClick={openCreateMode}  type="primary" icon={<PlusCircleOutlined />}>
               Thêm mới
           </Button>
-          <Button  onClick={toogleModalFormContact} icon={<SearchOutlined />}>
+          <Button  onClick={openFilterMode} icon={<SearchOutlined />}>
               Tìm kiếm
+          </Button>
+          <Button onClick={resetData} type="default" icon={<ReloadOutlined />}>
+              Reload
           </Button>
         </Space>
         <Divider />
         {loading ? 
             <>
-              <Spin tip="Loading..." spinning={loading}>
-                <Alert
-                  message="Đang lấy dữ liệu"
-                  description="Vui lòng chờ trong giây lát."
-                  type="info"
+              <Spin size="large" spinning={loading}>                
+                <Result
+                  title="Đang tải dữ liệu....."                  
                 />
               </Spin>
             </> 
             :
               <Table columns={columns} dataSource={data} />}
-      </VStack>
+      </>
 
       {/* Modal thêm mới */}
       <Modal
@@ -407,6 +467,80 @@ const TonDauKy = () =>{
           <HStack justifyContent="end">
             <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
             <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
+          </HStack>
+        </Form>
+      </Modal>
+
+      {/* Modal tìm kiếm */}
+      <Modal
+        open={openModalFilter}
+        title={"Tìm kiếm nâng cao"}
+        onCancel={toogleModalFormFilter}
+        footer={null}
+      >
+      <Form form={formFilter} 
+          name="control-hooks"
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 20,
+          }}
+          onFinish={filterTonDauKy}
+        >          
+          <Form.Item
+            label="Cơ sở thư viện: "
+            name="MaCoSo"            
+          >
+            <Select 
+              showSearch 
+              allowClear
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterSort={(optionA, optionB) =>
+                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+              }
+              >
+                {optionsCoSo}
+              </Select>
+          </Form.Item>
+          <Form.Item
+            label="Loại hình sách: "
+            name="MaLoaiHinhSach"
+          >
+            <Select 
+              showSearch              
+              allowClear
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterSort={(optionA, optionB) =>
+                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+              }
+              >
+                {optionsLoaiHinhSach}
+              </Select>
+          </Form.Item>
+          <Form.Item
+            label="Tên sách: "
+            name="MaSach"            
+          >
+            <Select 
+              showSearch
+              allowClear 
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterSort={(optionA, optionB) =>
+                optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+              }
+
+              >
+                {optionsSach}
+              </Select>
+          </Form.Item>        
+          
+          <HStack justifyContent="end">
+            <Button key="back" onClick={toogleModalFormFilter}>Thoát</Button>
+            <Button key="save" type="primary"  htmlType="submit">Tìm</Button>
           </HStack>
         </Form>
       </Modal>
