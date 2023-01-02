@@ -88,6 +88,7 @@ const TonDauKy = () =>{
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     
   }
+  
   function resetData(){    
     formFilter.setFieldsValue({
       MaSach: '',

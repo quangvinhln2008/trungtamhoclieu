@@ -1,14 +1,15 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Divider, Typography, Button, Select, Modal, Space, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
-import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Divider, Typography, Button, Select, Result, Modal, Space, Input, Table, Form, Tag, Popconfirm , Alert, Spin} from 'antd';
+import { SearchOutlined, PlusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import {VStack, HStack} from  '@chakra-ui/react';
 
 const { Title } = Typography;
 const DoiTuong = () =>{
   
   const [form] = Form.useForm();
+  const [formFilter] = Form.useForm();
   const [data, setData] = useState()
   const [editMode, setEditMode] = useState(false)
   const [dataEdit, setDataEdit] = useState()
@@ -16,9 +17,13 @@ const DoiTuong = () =>{
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
+  const [openModalFilter, setOpenModalFilter] = useState(false)
 
-  useEffect(()=>{
-    loadDoiTuong()
+  useEffect(()=>{    
+    setTimeout(() => {    
+      setLoading(true)
+      loadDoiTuong()
+    }, 1000);
   },[refresh])
 
   useEffect(()=>{
@@ -31,6 +36,10 @@ const DoiTuong = () =>{
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
   }
+  
+  function toogleModalFormFilter(){
+    setOpenModalFilter(!openModalFilter)
+  }
 
   function openCreateMode(){
     setEditMode(false)
@@ -40,6 +49,17 @@ const DoiTuong = () =>{
       TenDoiTuong: "",
       MaNhomDoiTuong: ""
     })
+  }
+  function resetData(){    
+    formFilter.setFieldsValue({
+      MaNhomDoiTuong: ''
+     
+  })
+    setLoading(true)
+    setTimeout(() => {    
+      loadDoiTuong()
+    }, 1000);
+    
   }
 
   async function loadDoiTuong(){
@@ -141,9 +161,36 @@ const DoiTuong = () =>{
       })
   };
   
+  async function filterDoiTuong(values){
+    return await axios
+      .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/doituong/filter', {
+        MaNhomDoiTuong: values.MaNhomDoiTuong, 
+      })
+      .then((res) => {
+        const result = {
+          status: res.status,
+          data: res.data.result.recordsets,
+        }
+        setLoading(true)
+        setOpenModalFilter(!openModalFilter)
+        setTimeout(() => {
+          setData(result.data[0])
+          setDataNhomDoiTuong(result.data[1])
+          setLoading(false)
+        }, 1000);
+        
+        return(result)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error.response)
+        toast.error(error?.response)
+      })
+  };
+
   const columns = [
     {
-      title: 'Tên nhóm đối tượng',
+      title: 'Tên đối tượng',
       dataIndex: 'TenDoiTuong',
       key: 'TenDoiTuong',
     },
@@ -192,29 +239,30 @@ const DoiTuong = () =>{
     <>
       <Title level={3}>Đối tượng</Title>
       <Divider />
-      <VStack justifyContent={"start"} alignItems="start">
+      <>
         <Space align="left" style={{ marginBottom: 16 }}>
           <Button  onClick={openCreateMode}  type="primary" icon={<PlusCircleOutlined />}>
               Thêm mới
           </Button>
-          <Button  onClick={toogleModalFormContact} icon={<SearchOutlined />}>
+          <Button  onClick={toogleModalFormFilter} icon={<SearchOutlined />}>
               Tìm kiếm
+          </Button>
+          <Button onClick={resetData} type="default" icon={<ReloadOutlined />}>
+              Reload
           </Button>
         </Space>
         <Divider />
         {loading ? 
             <>
-              <Spin tip="Loading..." spinning={loading}>
-                <Alert
-                  message="Đang lấy dữ liệu"
-                  description="Vui lòng chờ trong giây lát."
-                  type="info"
+              <Spin size="large" spinning={loading}>                
+                <Result
+                  title="Đang tải dữ liệu....."                  
                 />
               </Spin>
             </> 
             :
               <Table columns={columns} dataSource={data} />}
-      </VStack>
+      </>
 
       {/* Modal thêm mới */}
       <Modal
@@ -261,6 +309,36 @@ const DoiTuong = () =>{
           <HStack justifyContent="end">
             <Button key="back" onClick={toogleModalFormContact}>Thoát</Button>
             <Button key="save" type="primary"  htmlType="submit">Lưu</Button>
+          </HStack>
+        </Form>
+      </Modal>
+
+      {/* Modal tim kiếm */}
+      <Modal
+         open={openModalFilter}
+         title={"Tìm kiếm nâng cao"}
+         onCancel={toogleModalFormFilter}
+        footer={null}
+      >
+      <Form form={formFilter} 
+          name="control-hooks"
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 20,
+          }}
+          onFinish={filterDoiTuong}
+        >          
+          <Form.Item
+            label="Nhóm đối tượng: "
+            name="MaNhomDoiTuong"            
+          >
+          <Select options={dataNhomDoiTuong} />
+          </Form.Item>
+          <HStack justifyContent="end">
+            <Button key="back" onClick={toogleModalFormFilter}>Thoát</Button>
+            <Button key="save" type="primary"  htmlType="Tìm">Lưu</Button>
           </HStack>
         </Form>
       </Modal>
