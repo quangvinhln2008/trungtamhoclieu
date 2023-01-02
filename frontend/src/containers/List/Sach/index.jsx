@@ -404,6 +404,7 @@ const Sach = () =>{
           <InputNumber 
             style={{
               width: 150,
+              padding :'0px 20px'
             }}
             formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             parser={(value) => value.replace(/\$\s?|(,*)/g, '')}

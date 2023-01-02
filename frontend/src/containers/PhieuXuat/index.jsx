@@ -31,6 +31,7 @@ const PhieuXuat = () =>{
   const [dataDoiTuong, setDataDoiTuong] = useState()
   const [dataNhanVien, setDataNhanVien] = useState()
   const [dataLoaiHinhSach, setDataLoaiHinhSach] = useState()
+  const [dataGiaVatTu, setDataGiaVatTu] = useState()
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
   const [openModalContact, setOpenModalContact] = useState(false)
@@ -182,6 +183,7 @@ const PhieuXuat = () =>{
         MaCoSo : "",
         DienGiai : "",
         HTThanhToan:"",
+        Phi_Vchuyen:0,
         users:[]
     })
   }
@@ -205,6 +207,16 @@ const PhieuXuat = () =>{
     form.setFieldsValue({users})
     setTongSoLuongXuat(_?.sumBy(users, 'SoLuongXuat'))    
     setTongThanhTienXuat(_?.sumBy(users, 'ThanhTienXuat'))
+  }
+
+  const onMaSachChange = (name) => {
+    
+    const fields = form.getFieldsValue()
+    const { users } = fields
+    const selectedVatTu = dataGiaVatTu?.filter(item => item.MaSach === fields.users[name].MaSach)
+    
+    Object.assign(users[name], { DonGiaXuat: selectedVatTu[0]?.GiaBan})
+    form.setFieldsValue({users})
   }
 
   function resetData(){    
@@ -234,6 +246,7 @@ const PhieuXuat = () =>{
         setDataSach(result.data[3])
         setDataNhanVien(result.data[4])
         setDataDoiTuong(result.data[5])
+        setDataGiaVatTu(result.data[6])
         setLoading(false)
         return(result)
       })
@@ -320,6 +333,7 @@ const PhieuXuat = () =>{
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
+        Phi_Vchuyen: values.Phi_Vchuyen,
         ctPhieuXuat: values.users  
       },{header})
       .then((res) => {
@@ -351,6 +365,7 @@ const PhieuXuat = () =>{
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
+        Phi_Vchuyen: values.Phi_Vchuyen,
         HTThanhToan: values.HTThanhToan,
         ctPhieuXuat: values.users})
       .then((res) => {
@@ -625,7 +640,24 @@ const PhieuXuat = () =>{
                   >
                     <Input readOnly = {!viewMode} />
                   </Form.Item>
-                </Col>  
+                </Col> 
+                <Col className="gutter-row" span={8}>
+                <Form.Item    
+                    label="Phí vận chuyển: "               
+                    name='Phi_Vchuyen'                    
+                  >
+                  <InputNumber
+                      min={0}  
+                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                      stringMode
+                      style={{
+                        width: 150,
+                        padding: '0px 20px'
+                      }}
+                      />
+                  </Form.Item>
+                </Col> 
               </Row>
               <Divider plain>Chi tiết phiếu xuất</Divider>
               <Form.List name="users">
@@ -663,7 +695,7 @@ const PhieuXuat = () =>{
                     <Select 
                       disabled = {!viewMode} 
                        style={{
-                        width: 250,
+                        width: 350,
                       }}
                       placeholder="Chọn sách"
                       showSearch 
@@ -672,7 +704,7 @@ const PhieuXuat = () =>{
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
-
+                      onChange={() =>onMaSachChange(name)}
                       >
                         {optionsSach}
                   </Select>
@@ -691,7 +723,8 @@ const PhieuXuat = () =>{
                     readOnly = {!viewMode} 
                     placeholder="Số lượng"
                       style={{
-                        width: 80,
+                        width: 150,
+                        padding:'0px 20px'
                       }}
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
@@ -713,6 +746,7 @@ const PhieuXuat = () =>{
                     placeholder="Đơn giá"                  
                       style={{
                         width: 150,
+                        padding:'0px 20px'
                       }}
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
