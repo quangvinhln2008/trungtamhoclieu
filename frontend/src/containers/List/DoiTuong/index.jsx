@@ -191,15 +191,15 @@ const DoiTuong = () =>{
 
   const columns = [
     {
-      title: 'Tên đối tượng',
-      dataIndex: 'TenDoiTuong',
-      key: 'TenDoiTuong',
-    },
-    {
       title: 'Nhóm đối tượng',
       dataIndex: 'TenNhomDoiTuong',
       key: 'TenNhomDoiTuong',
     },
+    {
+      title: 'Tên nhà cung cấp',
+      dataIndex: 'TenDoiTuong',
+      key: 'TenDoiTuong',
+    },   
     {
       title: 'Tình trạng',
       key: 'Is_Deleted',

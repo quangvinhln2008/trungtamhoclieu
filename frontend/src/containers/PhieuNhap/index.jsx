@@ -297,7 +297,7 @@ const PhieuNhap = () =>{
         LoaiCt: '1',
         SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: cookies.MaCoSo, 
+        MaCoSo: values.MaCoSo, 
         MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
@@ -329,7 +329,7 @@ const PhieuNhap = () =>{
         SoCt: values.SoCt, 
         MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: cookies.MaCoSo, 
+        MaCoSo: values.MaCoSo, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
@@ -381,11 +381,6 @@ const PhieuNhap = () =>{
       key: 'NgayCt',
     },
     {
-      title: 'Diễn giải',
-      dataIndex: 'DienGiai',
-      key: 'DienGiai',
-    },
-    {
       title: 'Người lập',
       dataIndex: 'TenNhanVien',
       key: 'TenNhanVien',
@@ -396,7 +391,7 @@ const PhieuNhap = () =>{
       key: 'TenCoSo',
     },
     {
-      title: 'Đối tượng',
+      title: 'Nhà cung cấp',
       dataIndex: 'TenDoiTuong',
       key: 'TenDoiTuong',
     },
@@ -598,7 +593,32 @@ const PhieuNhap = () =>{
                         {optionsLoaiHinhSach}
                       </Select>
                   </Form.Item>
-                </Col>                
+                </Col>              
+                <Col className="gutter-row" span={8}>
+                  <Form.Item
+                  label="Cơ sở: "
+                  name="MaCoSo"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn cơ sở!'
+                    },
+                  ]}
+                  >
+                    <Select 
+                      disabled = {!viewMode} 
+                      showSearch 
+                      optionFilterProp="children"
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterSort={(optionA, optionB) =>
+                        optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                      }
+
+                      >
+                        {optionsCoSo}
+                      </Select>
+                  </Form.Item>
+                </Col>           
                 <Col className="gutter-row" span={8}>
                   <Form.Item
                   label="Diễn giải: "
@@ -653,7 +673,6 @@ const PhieuNhap = () =>{
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
-
                       >
                         {optionsSach}
                   </Select>

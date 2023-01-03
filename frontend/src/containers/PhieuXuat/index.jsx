@@ -607,7 +607,7 @@ const PhieuXuat = () =>{
                   lg: 32,
                 }}
               >
-                <Col className="gutter-row" span={8}>
+                {/* <Col className="gutter-row" span={8}>
                   <Form.Item
                   label="Loại hình sách: "
                   name="MaLoaiHinhSach"
@@ -631,7 +631,7 @@ const PhieuXuat = () =>{
                         {optionsLoaiHinhSach}
                       </Select>
                   </Form.Item>
-                </Col>                
+                </Col>                 */}
                 <Col className="gutter-row" span={8}>
                   <Form.Item
                   label="Diễn giải: "
