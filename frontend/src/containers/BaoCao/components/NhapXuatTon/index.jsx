@@ -168,6 +168,14 @@ const NhapXuatTon = () =>{
       // filterSearch: true,
     },
     {
+      title: 'Khoa',
+      dataIndex: 'TenKhoa',
+      key: 'TenKhoa',
+      // filters: dataVatTuFilter,
+      // onFilter: (value, record) => record.TenVatTu.includes(value),
+      // filterSearch: true,
+    },
+    {
       title: 'Tồn đầu kỳ',
       dataIndex: 'Ton_Dau',
       key: 'Ton_Dau',
