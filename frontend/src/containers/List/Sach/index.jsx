@@ -17,6 +17,7 @@ const Sach = () =>{
   const [editMode, setEditMode] = useState(false)
   const [dataEdit, setDataEdit] = useState()
   const [dataDoiTuong, setDataDoiTuong] = useState()
+  const [dataKhoa, setDataKhoa] = useState()
   const [dataLoaiHinhSach, setDataLoaiHinhSach] = useState()
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false)
@@ -24,6 +25,7 @@ const Sach = () =>{
   const [openModalFilter, setOpenModalFilter] = useState(false)
   const [options, setOption] = useState()
   const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
+  const [optionsKhoa, setOptionKhoa] = useState()
 
   function toogleModalFormContact(){
     setOpenModalContact(!openModalContact)
@@ -44,10 +46,12 @@ const Sach = () =>{
     
     setOption(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionKhoa(dataKhoa?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
 
     form.setFieldsValue({
         TenSach: dataEdit?.TenSach,
         MaDoiTuong: dataEdit?.MaDoiTuong,
+        MaKhoa: dataEdit?.MaKhoa,
         MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
         NamXuatBan: dataEdit?.NamXuatBan,
         Barcode : dataEdit?.Barcode,
@@ -59,6 +63,7 @@ const Sach = () =>{
     formFilter.setFieldsValue({
       TenSach: "",
       MaDoiTuong: "",
+      MaKhoa: "",
   })
     setLoading(true)
     setTimeout(() => {    
@@ -73,10 +78,12 @@ const Sach = () =>{
 
     setOption(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
-    
+    setOptionKhoa(dataKhoa?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+
     form.setFieldsValue({
       TenSach: "",
       MaDoiTuong: "",
+      MaKhoa:"",
       NamXuatBan: "",
       Barcode : "",
       GiaBan : 0
@@ -98,6 +105,7 @@ const Sach = () =>{
         setData(result.data[0])
         setDataDoiTuong(result.data[1])
         setDataLoaiHinhSach(result.data[2])
+        setDataKhoa(result.data[3])
         setLoading(false)
         return(result)
       })
@@ -132,6 +140,7 @@ const Sach = () =>{
       .post('https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach/create', {
         TenSach: values.TenSach, 
         MaDoiTuong: values.MaDoiTuong, 
+        MaKhoa: values.MaKhoa, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         NamXuatBan: values.NamXuatBan, 
         Barcode: values.Barcode, 
@@ -161,6 +170,7 @@ const Sach = () =>{
       .post(`https://app-trungtamhoclieu.ufm.edu.vn:3005/Sach/${dataEdit?.MaSach}`, {
         TenSach: values.TenSach, 
         MaDoiTuong: values.MaDoiTuong, 
+        MaKhoa: values.MaKhoa, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         NamXuatBan: values.NamXuatBan, 
         Barcode: values.Barcode, 
@@ -392,6 +402,28 @@ const Sach = () =>{
 
             >
               {options}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Khoa/ Phòng ban: "
+            name="MaKhoa"
+            rules={[
+              {
+                required: true,
+                message: 'Vui lòng chọn Khoa/ Phòng ban!'
+              },
+            ]}
+          >
+          <Select 
+            showSearch 
+            optionFilterProp="children"
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+            filterSort={(optionA, optionB) =>
+              optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+            }
+
+            >
+              {optionsKhoa}
             </Select>
           </Form.Item>
           <Form.Item
