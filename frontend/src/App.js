@@ -31,6 +31,8 @@ import NhanVien from './containers/List/NhanVien';
 import PhieuNhap from './containers/PhieuNhap';
 import PhieuXuat from './containers/PhieuXuat';
 
+import NhapXuatTon from './containers/BaoCao/components/NhapXuatTon';
+
 const App = (props) => {
   
   console.log('RoutesApp',RoutesApp['admin'])
@@ -50,6 +52,7 @@ const App = (props) => {
           <Route path='tondauky' element ={<LayoutApp component ={<TonDauKy />} />}/>
           <Route path='phieunhap' element ={<LayoutApp component ={<PhieuNhap />} />} />
           <Route path='phieuxuat' element ={<LayoutApp component ={<PhieuXuat />} />} />
+          <Route path='baocao-nhapxuatton' element ={<LayoutApp component ={<NhapXuatTon />} />} />
         {/* {RoutesApp['admin'].map((item) =>(
           <Route 
             key ={item.key}
