@@ -174,7 +174,7 @@ const NhapXuatTon = () =>{
       align:'right'
     }, 
     {
-      title: 'Giá trị tồn đầu',
+      title: 'Trị giá tồn đầu',
       dataIndex: 'Du_Dau',
       key: 'Du_Dau',
       align:'right'
@@ -186,7 +186,7 @@ const NhapXuatTon = () =>{
       align:'right'
     },   
     {
-      title: 'Giá trị nhập',
+      title: 'Trị giá nhập',
       dataIndex: 'Tien_Nhap',
       key: 'Tien_Nhap',
       align:'right'
@@ -198,7 +198,7 @@ const NhapXuatTon = () =>{
       align:'right'
     },      
     {
-      title: 'Giá trị xuất',
+      title: 'Trị giá xuất',
       dataIndex: 'Tien_Xuat',
       key: 'Tien_Xuat',
       align:'right'
@@ -210,7 +210,7 @@ const NhapXuatTon = () =>{
       align:'right'
     }, 
     {
-      title: 'Giá trị tồn cuối',
+      title: 'Trị giá tồn cuối',
       dataIndex: 'Du_Cuoi',
       key: 'Du_Cuoi',
       align:'right'
