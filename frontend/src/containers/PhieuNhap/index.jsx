@@ -548,7 +548,7 @@ const PhieuNhap = () =>{
                       disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
@@ -584,7 +584,7 @@ const PhieuNhap = () =>{
                       disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
@@ -609,7 +609,7 @@ const PhieuNhap = () =>{
                       disabled = {!viewMode} 
                       showSearch 
                       optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
@@ -669,7 +669,7 @@ const PhieuNhap = () =>{
                       placeholder="Chọn sách"
                       showSearch 
                       optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
@@ -819,7 +819,7 @@ const PhieuNhap = () =>{
                   showSearch
                   allowClear
                   optionFilterProp="children"
-                  filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                  filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                   filterSort={(optionA, optionB) =>
                     optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                   }
@@ -836,7 +836,7 @@ const PhieuNhap = () =>{
                   showSearch 
                   allowClear
                   optionFilterProp="children"
-                  filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                  filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                   filterSort={(optionA, optionB) =>
                     optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                   }
@@ -853,7 +853,7 @@ const PhieuNhap = () =>{
                   showSearch 
                   allowClear
                   optionFilterProp="children"
-                  filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                  filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                   filterSort={(optionA, optionB) =>
                     optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                   }

@@ -373,7 +373,7 @@ const TonDauKy = () =>{
             <Select 
               showSearch 
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
               filterSort={(optionA, optionB) =>
                 optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
               }
@@ -395,7 +395,7 @@ const TonDauKy = () =>{
             <Select 
               showSearch 
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
               filterSort={(optionA, optionB) =>
                 optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
               }
@@ -417,7 +417,7 @@ const TonDauKy = () =>{
             <Select 
               showSearch 
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
               filterSort={(optionA, optionB) =>
                 optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
               }
@@ -497,7 +497,7 @@ const TonDauKy = () =>{
               showSearch 
               allowClear
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
               filterSort={(optionA, optionB) =>
                 optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
               }
@@ -513,7 +513,7 @@ const TonDauKy = () =>{
               showSearch              
               allowClear
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
               filterSort={(optionA, optionB) =>
                 optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
               }
@@ -529,7 +529,7 @@ const TonDauKy = () =>{
               showSearch
               allowClear 
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
               filterSort={(optionA, optionB) =>
                 optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
               }

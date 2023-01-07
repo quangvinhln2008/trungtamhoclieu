@@ -295,7 +295,7 @@ const NhapXuatTon = () =>{
                       style={{ width: 300 }}
                       allowClear
                       optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
@@ -314,7 +314,7 @@ const NhapXuatTon = () =>{
                       showSearch 
                       allowClear
                       optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
@@ -331,7 +331,7 @@ const NhapXuatTon = () =>{
                       showSearch 
                       allowClear
                       optionFilterProp="children"
-                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
                       filterSort={(optionA, optionB) =>
                         optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
                       }
@@ -355,7 +355,7 @@ const NhapXuatTon = () =>{
               </Spin>
             </> 
             :
-              <Table pagination={false} columns={columns} dataSource={data} onChange={onChange} />}
+              <Table bordered pagination={false} columns={columns} dataSource={data} onChange={onChange} />}
       </>
     </>
   )

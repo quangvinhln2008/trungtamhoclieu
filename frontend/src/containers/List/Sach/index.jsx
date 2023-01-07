@@ -373,7 +373,7 @@ const Sach = () =>{
           <Select 
             showSearch 
             optionFilterProp="children"
-            filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
             filterSort={(optionA, optionB) =>
               optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
             }
@@ -395,7 +395,7 @@ const Sach = () =>{
           <Select 
             showSearch 
             optionFilterProp="children"
-            filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
             filterSort={(optionA, optionB) =>
               optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
             }
@@ -417,7 +417,7 @@ const Sach = () =>{
           <Select 
             showSearch 
             optionFilterProp="children"
-            filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
             filterSort={(optionA, optionB) =>
               optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
             }
@@ -512,7 +512,7 @@ const Sach = () =>{
             showSearch 
             allowClear
             optionFilterProp="children"
-            filterOption={(input, option) => option?.children?.toLowerCase().includes(input)}  
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
             filterSort={(optionA, optionB) =>
               optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
             }
