@@ -32,6 +32,8 @@ import PhieuNhap from './containers/PhieuNhap';
 import PhieuXuat from './containers/PhieuXuat';
 
 import NhapXuatTon from './containers/BaoCao/components/NhapXuatTon';
+import BangKeNhap from './containers/BaoCao/components/BangKeNhap';
+import BangKeXuat from './containers/BaoCao/components/BangKeXuat';
 
 const App = (props) => {
   
@@ -53,6 +55,8 @@ const App = (props) => {
           <Route path='phieunhap' element ={<LayoutApp component ={<PhieuNhap />} />} />
           <Route path='phieuxuat' element ={<LayoutApp component ={<PhieuXuat />} />} />
           <Route path='baocao-nhapxuatton' element ={<LayoutApp component ={<NhapXuatTon />} />} />
+          <Route path='bangkenhap' element ={<LayoutApp component ={<BangKeNhap />} />} />
+          <Route path='bangkexuat' element ={<LayoutApp component ={<BangKeXuat />} />} />
         {/* {RoutesApp['admin'].map((item) =>(
           <Route 
             key ={item.key}

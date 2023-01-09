@@ -291,9 +291,7 @@ const NhapXuatTon = () =>{
                     ]}     
                   >
                   <DatePicker  format={"DD-MM-YYYY"}/>
-                  </Form.Item>
-                
-             
+                  </Form.Item>    
                   <Form.Item
                     label={"Chọn cơ sở: "}
                     name={"MaCoSo"}                    
