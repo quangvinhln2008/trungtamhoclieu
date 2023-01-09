@@ -39,6 +39,7 @@ const PhieuXuat = () =>{
   const [optionsSach, setOptionSach] = useState()
   const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
   const [optionsCoSo, setOptionCoSo] = useState()
+  const [optionsCoSoN, setOptionCoSoN] = useState()
   const [optionsDoiTuong, setOptionDoiTuong] = useState()
   const [optionsNhanVien, setOptionNhanVien] = useState()
   const [tongSoLuongXuat,setTongSoLuongXuat] = useState(0)
@@ -139,6 +140,7 @@ const PhieuXuat = () =>{
     
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSoN(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
@@ -167,6 +169,7 @@ const PhieuXuat = () =>{
 
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSoN(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
@@ -328,7 +331,8 @@ const PhieuXuat = () =>{
         LoaiCt: '2',
         SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: cookies.MaCoSo, 
+        MaCoSo: maCt === 'XPH' ?cookies.MaCoSo : values.MaCoSo, 
+        MaCoSoN: values.MaCoSoN, 
         MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
@@ -361,7 +365,8 @@ const PhieuXuat = () =>{
         SoCt: values.SoCt, 
         MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
-        MaCoSo: cookies.MaCoSo, 
+        MaCoSo: maCt === 'XPH' ? cookies.MaCoSo : values.MaCoSo,
+        MaCoSoN: values.MaCoSoN,
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
@@ -424,7 +429,7 @@ const PhieuXuat = () =>{
       key: 'TenNhanVien',
     },
     {
-      title: 'Cơ sở',
+      title: 'Cơ sở xuất',
       dataIndex: 'TenCoSo',
       key: 'TenCoSo',
     },
@@ -607,14 +612,15 @@ const PhieuXuat = () =>{
                   lg: 32,
                 }}
               >
-                {/* <Col className="gutter-row" span={8}>
+                { maCt !== 'XPH' && <>
+                <Col className="gutter-row" span={8}>
                   <Form.Item
-                  label="Loại hình sách: "
-                  name="MaLoaiHinhSach"
+                  label="Cơ sở xuất: "
+                  name="MaCoSo"
                   rules={[
                     {
                       required: true,
-                      message: 'Vui lòng chọn loại hình sách!'
+                      message: 'Vui lòng chọn cơ sở xuất!'
                     },
                   ]}
                   >
@@ -628,10 +634,36 @@ const PhieuXuat = () =>{
                       }
 
                       >
-                        {optionsLoaiHinhSach}
+                        {optionsCoSo}
                       </Select>
                   </Form.Item>
-                </Col>                 */}
+                </Col>    
+                <Col className="gutter-row" span={8}>
+                  <Form.Item
+                  label="Cơ sở nhập: "
+                  name="MaCoSoN"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn cơ sở nhập!'
+                    },
+                  ]}
+                  >
+                    <Select 
+                      disabled = {!viewMode} 
+                      showSearch 
+                      optionFilterProp="children"
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
+                      filterSort={(optionA, optionB) =>
+                        optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                      }
+
+                      >
+                        {optionsCoSo}
+                      </Select>
+                  </Form.Item>
+                </Col> 
+                </>}            
                 <Col className="gutter-row" span={8}>
                   <Form.Item
                   label="Diễn giải: "

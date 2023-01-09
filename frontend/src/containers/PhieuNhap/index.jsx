@@ -38,6 +38,7 @@ const PhieuNhap = () =>{
   const [optionsSach, setOptionSach] = useState()
   const [optionsLoaiHinhSach, setOptionLoaiHinhSach] = useState()
   const [optionsCoSo, setOptionCoSo] = useState()
+  const [optionsCoSoX, setOptionCoSoX] = useState()
   const [optionsDoiTuong, setOptionDoiTuong] = useState()
   const [optionsNhanVien, setOptionNhanVien] = useState()
   const [tongSoLuongNhap,setTongSoLuongNhap] = useState(0)
@@ -118,6 +119,7 @@ const PhieuNhap = () =>{
     
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSoX(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
@@ -130,6 +132,7 @@ const PhieuNhap = () =>{
         SoCt: dataEdit?.SoCt,
         MaLoaiHinhSach: dataEdit?.MaLoaiHinhSach,
         MaCoSo : dataEdit?.MaCoSo,
+        MaCoSoX : dataEdit?.MaCoSoX,
         MaDoiTuong: dataEdit?.MaDoiTuong,
         MaNhanVien: cookies.id,
         HTThanhToan: dataEdit?.HTThanhToan,
@@ -146,6 +149,7 @@ const PhieuNhap = () =>{
 
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSoX(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
@@ -160,6 +164,7 @@ const PhieuNhap = () =>{
         MaNhanVien: "",
         MaLoaiHinhSach: "",
         MaCoSo : "",
+        MaCoSoX : "",
         DienGiai : "",
         HTThanhToan:"",
         users:[]
@@ -171,6 +176,7 @@ const PhieuNhap = () =>{
 
     setOptionSach(dataSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionCoSo(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
+    setOptionCoSoX(dataCoSo?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionLoaiHinhSach(dataLoaiHinhSach?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionDoiTuong(dataDoiTuong?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
     setOptionNhanVien(dataNhanVien?.map((d) => <Option key={d?.value}>{d?.label}</Option>));
@@ -298,6 +304,7 @@ const PhieuNhap = () =>{
         SoCt: values.SoCt, 
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: values.MaCoSo, 
+        MaCoSoX: values.MaCoSoX, 
         MaSach: values.MaSach, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
@@ -330,6 +337,7 @@ const PhieuNhap = () =>{
         MaCt: maCt,
         MaLoaiHinhSach: values.MaLoaiHinhSach, 
         MaCoSo: values.MaCoSo, 
+        MaCoSoX: values.MaCoSoX, 
         MaDoiTuong: values.MaDoiTuong,
         MaNhanVien: cookies.id,
         DienGiai: values.DienGiai,
@@ -386,7 +394,7 @@ const PhieuNhap = () =>{
       key: 'TenNhanVien',
     },
     {
-      title: 'Cơ sở',
+      title: 'Cơ sở nhập',
       dataIndex: 'TenCoSo',
       key: 'TenCoSo',
     },
@@ -596,7 +604,7 @@ const PhieuNhap = () =>{
                 </Col>              
                 <Col className="gutter-row" span={8}>
                   <Form.Item
-                  label="Cơ sở: "
+                  label="Cơ sở nhập: "
                   name="MaCoSo"
                   rules={[
                     {
@@ -618,7 +626,32 @@ const PhieuNhap = () =>{
                         {optionsCoSo}
                       </Select>
                   </Form.Item>
-                </Col>           
+                </Col> {  maCt === 'NCS' || maCt === 'NPB' ?       
+                <Col className="gutter-row" span={8}>
+                  <Form.Item
+                  label="Cơ sở xuất: "
+                  name="MaCoSoX"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn cơ sở xuất!'
+                    },
+                  ]}
+                  >
+                    <Select 
+                      disabled = {!viewMode} 
+                      showSearch 
+                      optionFilterProp="children"
+                      filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}  
+                      filterSort={(optionA, optionB) =>
+                        optionA?.children?.toLowerCase().localeCompare(optionB?.children?.toLowerCase())
+                      }
+
+                      >
+                        {optionsCoSoX}
+                      </Select>
+                  </Form.Item>
+                </Col> :'' }
                 <Col className="gutter-row" span={8}>
                   <Form.Item
                   label="Diễn giải: "
@@ -664,7 +697,7 @@ const PhieuNhap = () =>{
                     <Select 
                       disabled = {!viewMode} 
                        style={{
-                        width: 250,
+                        width: 300,
                       }}
                       placeholder="Chọn sách"
                       showSearch 
@@ -692,6 +725,7 @@ const PhieuNhap = () =>{
                     placeholder="Số lượng"
                       style={{
                         width: 80,
+                        paddingRight:'15px'
                       }}
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
@@ -713,6 +747,7 @@ const PhieuNhap = () =>{
                     placeholder="Đơn giá"
                       style={{
                         width: 150,
+                        paddingRight:'15px'
                       }}
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
@@ -727,7 +762,8 @@ const PhieuNhap = () =>{
                       readOnly
                       placeholder="Thành tiền"
                         style={{
-                          width: 150
+                          width: 150,                          
+                        paddingRight:'15px'
                         }}
                         formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                         parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
